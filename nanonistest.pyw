@@ -31,6 +31,7 @@ class MainWindow(QMainWindow):
 	def __init__(self, parent=None):
 		super(MainWindow, self).__init__(parent)
 		#self.filename = None
+		############# INIT DATA ####################
 		self.currentdir = None
 		self.alllist = {} 
 		self.sxmlist = []
@@ -53,11 +54,7 @@ class MainWindow(QMainWindow):
 		self.currentdata = None
 		self.select_region = None
 		
-		self.imagePara = ImageParam()
-		#self.imagePara.colormap = 'grey'
-		self.image = ImageItem()
-		self.image.set_selectable(True)
-		
+		###################### ParaLayout 1 ###########################
 		selectLayout = QHBoxLayout()
 		self.selectComboBox = QComboBox()
 		#self.selectComboBox.setFixedWidth(150)
@@ -66,58 +63,44 @@ class MainWindow(QMainWindow):
 		selectLayout.addWidget(self.selectComboBox)
 		selectLayout.addWidget(self.openButton)
 		
+		proName = QLabel("Properties:")
 		self.proTable = QTableWidget()
 		self.proTable.setFixedWidth(200)
 		self.proTable.setFixedHeight(400)
-		self.imagePlot2 = ImageWidget(lock_aspect_ratio=True, aspect_ratio=1.0,yreverse=False,colormap='gray')
-		self.image2 = ImageItem()
-		self.image2.set_selectable(True)
-		self.imagePlot2.register_all_image_tools()
-		self.imagePlot2.plot.add_item(self.image2)
-		
+				
+		listName = QLabel("Spec Names:")
 		self.listWidget = QListWidget()
 		self.listWidget.setFixedWidth(250)
-		self.listWidget.setFixedHeight(450)
+		#self.listWidget.setFixedHeight(450)
 		self.listWidget.setSelectionMode(3)
+		speclistLayout = QVBoxLayout()
+		speclistLayout.addWidget(listName)
+		speclistLayout.addWidget(self.listWidget)		
 		
-		self.xLabel = QLabel("Xc:")
-		self.xshowLabel = QLabel("0")
-		self.yLabel = QLabel("Yc:")
-		self.yshowLabel = QLabel("0")
-		self.processComboBox = QComboBox()
-		self.processComboBox.addItems(["Raw","Substrac average","Substract slope","Subtract linear fit"])
+		logName = QLabel("Message Box:")
+		self.clearButton = QPushButton("Clear logs")
+		self.loglistWidget = QListWidget()
+		loglistLayout = QGridLayout()
+		loglistLayout.addWidget(logName,0,0)
+		loglistLayout.addWidget(self.clearButton,0,1)
+		loglistLayout.addWidget(self.loglistWidget,1,0,1,2)
 		
-		self.imagePlot = ImageWidget(aspect_ratio=1.0, lock_aspect_ratio=True,show_contrast=True,yreverse=False,colormap='gray')#,show_itemlist=True
-		#self.imagePlot.plot.set_aspect_ratio(1.00, True)
-		self.imagePlot.plot.setFixedHeight(500)
-		self.imagePlot.plot.setFixedWidth(500)
-		self.imagePlot.register_all_image_tools()
-		self.imagePlot.plot.add_item(self.image)
+		paraLayout1 = QVBoxLayout()
+		paraLayout1.addLayout(selectLayout)
+		paraLayout1.addWidget(proName)
+		paraLayout1.addWidget(self.proTable)
+		paraLayout1.addStretch()
+		firstLayout = QGridLayout()
+		firstLayout.addLayout(paraLayout1,0,0)
+		firstLayout.addLayout(speclistLayout,0,1)
+		firstLayout.addLayout(loglistLayout,1,0,1,2)
 		
-		self.curvePlot = CurveWidget()
-		self.curvePlot.plot.setFixedHeight(300)
-		self.curvePlot.plot.setFixedWidth(500)
-		self.curvePlot.register_all_curve_tools()
-		self.datchannelComboBox = QComboBox()
-		self.datchannelComboBox.addItems(['Bias calc (V)', 'Current (A)', 'LIX 1 omega (A)', 'LIY 1 omega (A)'])
-		self.imagePlot.plot.do_autoscale(True)
-		#self.imagePlot.add_tool(ColormapTool)
-		#self.imagePlot.plot.select_item(self.image)
-		#self.plotItem = PlotItem()
-		#self.imagePlot = ImageView(view=self.plotItem)
-		#self.plotItem.showAxis('bottom',show=True)
-		#self.imagePlot.resize(400,400)
-		#self.imagePlot.plot.do_autoscale()
-		#self.imagePlot.setFixedHeight(400)
-		#self.imagePlot.setFixedWidth(400)
-
-		#self.imagePlot.add_toolbar(toolbar, "default")
-		#self.imagePlot.register_all_image_tools()
+		###################### ParaLayout 2 ###########################
+		#paraLayout2 = QVBoxLayout()
+		#paraLayout2.addWidget(self.listWidget)
+		#paraLayout2.addStretch()
 		
-		#self.imageLabel.setAlignment(Qt.AlignCenter)
-		#self.imageLabel.setContextMenuPolicy(Qt.ActionsContextMenu)
-		#self.setCentralWidget(self.imageLabel)
-		
+		###################### ParaLayout 3 ###########################
 		self.forbackComboBox = QComboBox()
 		self.forbackComboBox.addItems(['Forward','Backward'])
 		self.channelComboBox = QComboBox()
@@ -125,15 +108,12 @@ class MainWindow(QMainWindow):
 		self.applyButton = QPushButton("Apply")
 		self.closeButton = QPushButton("Close")
 		
-		paraLayout1 = QVBoxLayout()
-		paraLayout1.addLayout(selectLayout)
-		paraLayout1.addWidget(self.proTable)
-		#paraLayout1.addWidget(self.imagePlot2)
-		paraLayout1.addStretch()
-		
-		paraLayout2 = QVBoxLayout()
-		paraLayout2.addWidget(self.listWidget)
-		paraLayout2.addStretch()
+		self.xLabel = QLabel("Xc:")
+		self.xshowLabel = QLabel("0")
+		self.yLabel = QLabel("Yc:")
+		self.yshowLabel = QLabel("0")
+		self.processComboBox = QComboBox()
+		self.processComboBox.addItems(["Raw","Substrac average","Substract slope","Subtract linear fit"])
 		
 		showLayout = QGridLayout()
 		xyLayout = QHBoxLayout()
@@ -148,28 +128,74 @@ class MainWindow(QMainWindow):
 		showLayout.addWidget(self.addButton,1,2)
 		showLayout.addWidget(self.applyButton,1,3)
 		
+		self.imagePara = ImageParam()
+		#self.imagePara.colormap = 'grey'
+		self.image = ImageItem()
+		self.image.set_selectable(True)
+		
+		self.imagePlot = ImageWidget(aspect_ratio=1.0, lock_aspect_ratio=True,show_contrast=True,yreverse=False,colormap='gray')#,show_itemlist=True
+		#self.imagePlot.plot.set_aspect_ratio(1.00, True)
+		self.imagePlot.plot.setFixedHeight(500)
+		self.imagePlot.plot.setFixedWidth(500)
+		self.imagePlot.register_all_image_tools()
+		self.imagePlot.plot.add_item(self.image)
+		self.imagePlot.plot.do_autoscale(True)
+		
 		paraLayout3 = QVBoxLayout()
 		paraLayout3.addLayout(showLayout)
 		paraLayout3.addWidget(self.imagePlot)
 		paraLayout3.addStretch()
 		
-		paraLayout4 = QVBoxLayout()
-		paraLayout4.addWidget(self.curvePlot)
-		paraLayout4.addWidget(self.datchannelComboBox)
-		paraLayout4.addWidget(self.imagePlot2)
-		paraLayout4.addStretch()		
+		##################### ParaLayout 4 ############################
+		self.imagePlot2 = ImageWidget(lock_aspect_ratio=True, aspect_ratio=1.0,yreverse=False,colormap='gray')
+		self.image2 = ImageItem()
+		self.image2.set_selectable(True)
+		self.imagePlot2.register_all_image_tools()
+		self.imagePlot2.plot.add_item(self.image2)	
+		#self.imagePlot2.plot.setFixedHeight(200)
+		#self.imagePlot2.plot.setFixedWidth(200)
 		
+		#self.imagePlot3 = ImageWidget(lock_aspect_ratio=True, aspect_ratio=1.0,yreverse=False,colormap='gray')
+		#self.image3 = ImageItem()
+		#self.image3.set_selectable(True)
+		#self.imagePlot3.register_all_image_tools()
+		#self.imagePlot3.plot.add_item(self.image2)
+		#self.imagePlot3.plot.setFixedHeight(200)
+		#self.imagePlot3.plot.setFixedWidth(200)
+		
+		self.curvePlot = CurveWidget()
+		self.curvePlot.plot.setFixedHeight(300)
+		self.curvePlot.plot.setFixedWidth(500)
+		self.curvePlot.register_all_curve_tools()
+		channelName = QLabel("Channel:")
+		self.datchannelComboBox = QComboBox()
+		self.datchannelComboBox.addItems(['Bias calc (V)', 'Current (A)', 'LIX 1 omega (A)', 'LIY 1 omega (A)'])
+		
+		paraLayout4 = QGridLayout()
+		paraLayout4.addWidget(self.curvePlot,0,0,1,2)
+		paraLayout4.addWidget(channelName,1,0)
+		paraLayout4.addWidget(self.datchannelComboBox,1,1)
+		
+		paraLayout4.addWidget(self.imagePlot2,2,0,1,2)
+		#paraLayout4.addWidget(self.imagePlot3,2,1)
+		#paraLayout4.addStretch()		
+		
+		#################### MAIN WINDOW ##############################
 		layout = QHBoxLayout()
 		#layout = QGridLayout()
-		layout.addLayout(paraLayout1)
-		layout.addLayout(paraLayout2)
+		#layout.addLayout(paraLayout1)
+		layout.addLayout(firstLayout)
+		#layout.addLayout(paraLayout2)
 		#layout.addStretch()
 		layout.addLayout(paraLayout3)
 		layout.addLayout(paraLayout4)
+		#layout.addWidget(self.loglistWidget)
 		centralWidget = QWidget()
 		centralWidget.setLayout(layout);
 		self.setCentralWidget(centralWidget);
 		
+		
+		######################## SIGNALS AND SLOTS ####################
 		self.connect(self.openButton, SIGNAL("clicked()"), self.choosedir)
 		self.connect(self.addButton,SIGNAL("clicked()"), self.selectRegion)
 		self.connect(self.selectComboBox, SIGNAL("currentIndexChanged(int)"),self.openfile)
@@ -179,6 +205,9 @@ class MainWindow(QMainWindow):
 		self.connect(self.datchannelComboBox, SIGNAL("currentIndexChanged(int)"), self.updateSpec)
 		self.connect(self.processComboBox, SIGNAL("currentIndexChanged(int)"), self.updateImage)
 		self.connect(self.applyButton,SIGNAL("clicked()"), self.getSelectRegion)
+		self.connect(self.clearButton, SIGNAL("clicked()"), self.clearLog)
+		
+	############################ INIT END ################################	
 		
 	def choosedir(self):
 		#fname = unicode(QFileDialog.getOpenFileName(self, "Choose a File"))
@@ -240,6 +269,8 @@ class MainWindow(QMainWindow):
 			#print self.currentsxm
 		self.scale_factor = self.nanofile.header['scan_pixels'][0]/(self.nanofile.header['scan_range'][0]*1000000000)
 		#print self.scale_factor
+		message = "Loaded %s " % os.path.basename(fname)
+		self.updateStatus(message)
 		self.updateTable()
 		self.updateImage()
 		self.updateImageInfo()
@@ -302,39 +333,43 @@ class MainWindow(QMainWindow):
 		coor3 = self.select_rect.get_points()
 		co1 = coor3[0]  # top right, maximal x and y
 		co2 = coor3[2]  # bottom left, minimal x and y
-		print co1
-		print co2
+		#print co1
+		#print co2
 		self.select_region = self.currentdata[co2[1]:co1[1],co2[0]:co1[0]]
 		self.currentdata = self.currentdata.astype(np.float32,copy=False)
 		self.select_region = self.select_region.astype(np.float32,copy=False)
 		w,h = self.select_region.shape
 		print w
 		print h
+		#print self.select_region
 		#####################################
 		self.image2.set_data(self.select_region)
-		self.imagePlot.plot.set_aspect_ratio(1.00, True)
+		#self.imagePlot.plot.set_aspect_ratio(1.00, True)
 		
 		self.imagePlot2.plot.set_axis_limits('left',0,w)
 		self.imagePlot2.plot.set_axis_limits('bottom',0,h)
 		self.imagePlot2.plot.replot()
+		self.updateStatus("show select Image")
 		#####################################
-		print self.currentdata.dtype
-		print self.select_region.dtype
+		#print self.currentdata.dtype
+		#print self.select_region.dtype
 		res = cv2.matchTemplate(self.currentdata,self.select_region,cv2.TM_CCOEFF_NORMED)
 		#cv2.imshow("test",res)
-		threshold = 0.85
+		threshold = 0.9
 		loc = np.where( res >= threshold)
 		if self.matchrects != None:
 			self.imagePlot.plot.del_items(self.matchrects)
 		self.matchrects = []
 		num = 0
 		loc_find = []
+		newdataflag = True
 		for pt in zip(*loc[::-1]):
 			#print pt
+			newdataflag = True
 			if num == 0:
 				x1 = pt[0]
 				y1 = pt[1]
-				print pt
+				#print pt
 				x2 = x1 + h
 				y2 = y1 + w
 				loc_find.append([x1,y1])
@@ -343,19 +378,31 @@ class MainWindow(QMainWindow):
 			else:
 				x1 = pt[0]
 				y1 = pt[1]
-				if abs(x1 - loc_find[-1][0])+abs(y1 - loc_find[-1][1]) > (w+h)/3:
-					print pt
+				for item in loc_find:
+					if abs(x1 - item[0])+abs(y1 - item[1]) < (w+h)/3:
+						newdataflag = False
+						break
+				if newdataflag:
 					loc_find.append([x1,y1])
 					x2 = x1 + h
 					y2 = y1 + w
 					rect = RectangleShape(x1,y1,x2,y2)
 					self.matchrects.append(rect)
-				#x2 = x1 + h
-				#y2 = y1 + w
+					
+						
+				#if abs(x1 - loc_find[-1][0])+abs(y1 - loc_find[-1][1]) > (w+h)/3:
+					##print pt
+					#loc_find.append([x1,y1])
+					#x2 = x1 + h
+					#y2 = y1 + w
+					#rect = RectangleShape(x1,y1,x2,y2)
+					#self.matchrects.append(rect)
 			num = num + 1
 			#rect = RectangleShape(x1,y1,x2,y2)
 			#self.matchrects.append(rect)
-		print num
+		message = "With threshold %f , %d molecules are found " % (threshold, len(loc_find)-1)
+		self.updateStatus(message)
+		#print num
 		for rect in self.matchrects:
 			self.imagePlot.plot.add_item(rect)	
 		self.imagePlot.plot.replot()
@@ -530,6 +577,14 @@ class MainWindow(QMainWindow):
 			self.imagePlot.plot.add_item(item)
 		self.curvePlot.plot.replot()
 		self.imagePlot.plot.replot()
+		
+	def updateStatus(self, message):
+		self.loglistWidget.addItem(message)
+		self.loglistWidget.scrollToBottom()
+		
+	def clearLog(self):
+		self.loglistWidget.clear()
+		
 
 def main():
     app = QApplication(sys.argv)
