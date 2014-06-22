@@ -17,6 +17,10 @@ from guiqwt.shapes import EllipseShape
 from guiqwt.annotations import AnnotatedRectangle
 from guiqwt.annotations import AnnotatedPoint
 from guiqwt.styles import AnnotationParam
+from guiqwt.label import LabelItem
+from guiqwt.styles import LabelParam
+from guiqwt.styles import LineStyleParam
+from guiqwt.styles import FontParam
 from guiqwt.builder import make
 #import random as rd
 import numpy as np
@@ -430,18 +434,36 @@ class MainWindow(QMainWindow):
 			temp_y = self.datcoor[line][1]
 			x = -(x_abso - temp_x) * self.scale_factor
 			y = -(y_abso - temp_y) * self.scale_factor
-			#self.datname[line] = 
-			#print str(x) + " " + str(y)
+			
 			x1 = x - 2
 			y1 = y + 2
 			x2 = x + 2
 			y2 = y - 2
 			
-			rect = RectangleShape(x1,y1,x2,y2)
 			num = line.strip().split(".")
 			#print num
 			num = num[-2][-3:]
-			label = make.label(num,(x1,y1),(3,3),"TL")
+			
+			testfontparam = FontParam()
+			testfontparam.size = 8
+			linestyleparam = LineStyleParam()
+			linestyleparam.width = 0
+			testlabelparam = LabelParam()
+			testlabelparam.bgalpha = 0
+			testlabelparam.border = linestyleparam
+			testlabelparam.font = testfontparam
+			testlabelparam.anchor = "C"
+			testlabelparam.xg = 3
+			testlabelparam.yg = 3
+			testlabelparam.xc = x1
+			testlabelparam.yc = y1
+			
+			#testlabelparam.anchor
+			label = LabelItem(num, testlabelparam)
+			
+			rect = RectangleShape(x1,y1,x2,y2)
+			
+			#label = make.label(num,(x1,y1),(3,3),"TL")
 			#param = AnnotationParam()
 			#param.title = num
 			#anno = AnnotatedPoint(x,y, param)
