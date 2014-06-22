@@ -41,6 +41,8 @@ class MainWindow(QMainWindow):
 		self.datfiles = []
 		self.datlist_time = {}
 		self.datcoor = {}
+		self.datnum = {}
+		self.datlabels = []
 		self.datrects = []
 		self.matchrects = []
 		self.dathighlights = []
@@ -333,8 +335,6 @@ class MainWindow(QMainWindow):
 		coor3 = self.select_rect.get_points()
 		co1 = coor3[0]  # top right, maximal x and y
 		co2 = coor3[2]  # bottom left, minimal x and y
-		#print co1
-		#print co2
 		self.select_region = self.currentdata[co2[1]:co1[1],co2[0]:co1[0]]
 		self.currentdata = self.currentdata.astype(np.float32,copy=False)
 		self.select_region = self.select_region.astype(np.float32,copy=False)
@@ -398,11 +398,8 @@ class MainWindow(QMainWindow):
 					#rect = RectangleShape(x1,y1,x2,y2)
 					#self.matchrects.append(rect)
 			num = num + 1
-			#rect = RectangleShape(x1,y1,x2,y2)
-			#self.matchrects.append(rect)
 		message = "With threshold %f , %d molecules are found " % (threshold, len(loc_find)-1)
 		self.updateStatus(message)
-		#print num
 		for rect in self.matchrects:
 			self.imagePlot.plot.add_item(rect)	
 		self.imagePlot.plot.replot()
@@ -413,7 +410,9 @@ class MainWindow(QMainWindow):
 		if self.datrects != None:
 			self.imagePlot.plot.del_items(self.datrects)
 		self.datrects = []
-		#temp_dat = None
+		if self.datlabels != None:
+			self.imagePlot.plot.del_items(self.datlabels)
+		self.datlabels = []
 		# read the coordinates from the dat files belonging to the currently opened sxm
 		for line in self.datfiles:
 			filepath = os.path.join(self.currentdir,line)
@@ -431,20 +430,23 @@ class MainWindow(QMainWindow):
 			temp_y = self.datcoor[line][1]
 			x = -(x_abso - temp_x) * self.scale_factor
 			y = -(y_abso - temp_y) * self.scale_factor
+			#self.datname[line] = 
 			#print str(x) + " " + str(y)
 			x1 = x - 2
 			y1 = y + 2
 			x2 = x + 2
 			y2 = y - 2
+			
 			rect = RectangleShape(x1,y1,x2,y2)
-			#num = line.strip().split(".")
+			num = line.strip().split(".")
 			#print num
-			#num = num[-2][-3:]
-			#print num
+			num = num[-2][-3:]
+			label = make.label(num,(x1,y1),(3,3),"TL")
 			#param = AnnotationParam()
 			#param.title = num
 			#anno = AnnotatedPoint(x,y, param)
 			#anno.set_label_visible(False)
+			self.datlabels.append(label)
 			self.datrects.append(rect)
 			#self.datannos.append(anno)
 			#self.datchannelComboBox.clear()
@@ -452,6 +454,8 @@ class MainWindow(QMainWindow):
 			
 		for rect in self.datrects:
 			self.imagePlot.plot.add_item(rect)
+		for label in self.datlabels:
+			self.imagePlot.plot.add_item(label)
 		self.imagePlot.plot.replot()		
 	
 	def updateImage(self):
