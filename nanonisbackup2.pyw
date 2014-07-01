@@ -19,6 +19,7 @@ from guiqwt.annotations import AnnotatedPoint
 from guiqwt.styles import AnnotationParam
 from guiqwt.builder import make
 #import random as rd
+from scipy.ndimage.filters import laplace
 import numpy as np
 #import matplotlib.pyplot as plt
 import nanonisfile as nf
@@ -85,7 +86,7 @@ class MainWindow(QMainWindow):
 		self.yLabel = QLabel("Yc:")
 		self.yshowLabel = QLabel("0")
 		self.processComboBox = QComboBox()
-		self.processComboBox.addItems(["Raw","Substrac average","Substract slope","Subtract linear fit"])
+		self.processComboBox.addItems(["Raw","Substrac average","Substract slope","Subtract linear fit","Laplace 1","Laplace 2"])
 		
 		self.imagePlot = ImageWidget(aspect_ratio=1.0, lock_aspect_ratio=True,show_contrast=True,yreverse=False,colormap='gray')#,show_itemlist=True
 		#self.imagePlot.plot.set_aspect_ratio(1.00, True)
@@ -414,7 +415,7 @@ class MainWindow(QMainWindow):
 		temp2 = self.channelComboBox.currentIndex()
 		data = self.nanofile.data[temp2*2+temp1].data*100000000
 		data = self.updateImageProcess(data)
-		self.currentdata = data
+		#self.currentdata = data
 		self.image.set_data(data)
 		self.imagePlot.plot.set_aspect_ratio(1.00, True)
 		
@@ -465,6 +466,23 @@ class MainWindow(QMainWindow):
 			X = np.array([xi,]*int(n)).T
 			Y = (X*w[0] + w[1]).T
 			data = data - Y
+		# laplace filter 1
+		elif temp_index == 4:
+			#kern1 = np.array([0,1,0],[1,-4,1],[0,1,0])
+			# first subtract linear
+			data_temp = data.T
+			n = self.nanofile.header['scan_pixels'][0]
+			xi = np.arange(n)
+			x= np.array([xi,np.ones(n)])
+			w = np.linalg.lstsq(x.T,data_temp)[0]
+			data_sub = np.zeros([n,n])
+			X = np.array([xi,]*int(n)).T
+			Y = (X*w[0] + w[1]).T
+			data = data - Y
+			# then laplace
+			data = laplace(data)
+			
+			
 		else:
 			pass
 		return data
