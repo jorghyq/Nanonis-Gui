@@ -3,8 +3,6 @@
 import os
 import platform
 import sys
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
 from guiqwt.plot import ImageWidget
 from guiqwt.plot import CurveWidget
 from guiqwt.plot import ImagePlot
@@ -18,6 +16,9 @@ from guiqwt.annotations import AnnotatedRectangle
 from guiqwt.annotations import AnnotatedPoint
 from guiqwt.styles import AnnotationParam
 from guiqwt.builder import make
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
+
 #import random as rd
 from scipy.ndimage.filters import laplace
 import numpy as np
@@ -28,12 +29,12 @@ import cv2
 
 
 class MainWindow(QMainWindow):
-	
+
 	def __init__(self, parent=None):
 		super(MainWindow, self).__init__(parent)
 		#self.filename = None
 		self.currentdir = None
-		self.alllist = {} 
+		self.alllist = {}
 		self.sxmlist = []
 		self.sxmlist_time = {}
 		self.sxmtodatlist = {}
@@ -53,12 +54,12 @@ class MainWindow(QMainWindow):
 		self.currentsxm = None
 		self.currentdata = None
 		self.select_region = None
-		
+
 		self.imagePara = ImageParam()
 		#self.imagePara.colormap = 'grey'
 		self.image = ImageItem()
 		self.image.set_selectable(True)
-		
+
 		selectLayout = QHBoxLayout()
 		self.selectComboBox = QComboBox()
 		#self.selectComboBox.setFixedWidth(150)
@@ -66,7 +67,7 @@ class MainWindow(QMainWindow):
 		self.openButton.setFixedWidth(50)
 		selectLayout.addWidget(self.selectComboBox)
 		selectLayout.addWidget(self.openButton)
-		
+
 		self.proTable = QTableWidget()
 		self.proTable.setFixedWidth(200)
 		self.proTable.setFixedHeight(400)
@@ -75,26 +76,26 @@ class MainWindow(QMainWindow):
 		self.image2.set_selectable(True)
 		self.imagePlot2.register_all_image_tools()
 		self.imagePlot2.plot.add_item(self.image2)
-		
+
 		self.listWidget = QListWidget()
 		self.listWidget.setFixedWidth(250)
 		self.listWidget.setFixedHeight(450)
 		self.listWidget.setSelectionMode(3)
-		
+
 		self.xLabel = QLabel("Xc:")
 		self.xshowLabel = QLabel("0")
 		self.yLabel = QLabel("Yc:")
 		self.yshowLabel = QLabel("0")
 		self.processComboBox = QComboBox()
 		self.processComboBox.addItems(["Raw","Substrac average","Substract slope","Subtract linear fit","Laplace 1","Laplace 2"])
-		
+
 		self.imagePlot = ImageWidget(aspect_ratio=1.0, lock_aspect_ratio=True,show_contrast=True,yreverse=False,colormap='gray')#,show_itemlist=True
 		#self.imagePlot.plot.set_aspect_ratio(1.00, True)
 		self.imagePlot.plot.setFixedHeight(500)
 		self.imagePlot.plot.setFixedWidth(500)
 		self.imagePlot.register_all_image_tools()
 		self.imagePlot.plot.add_item(self.image)
-		
+
 		self.curvePlot = CurveWidget()
 		self.curvePlot.plot.setFixedHeight(300)
 		self.curvePlot.plot.setFixedWidth(500)
@@ -114,28 +115,28 @@ class MainWindow(QMainWindow):
 
 		#self.imagePlot.add_toolbar(toolbar, "default")
 		#self.imagePlot.register_all_image_tools()
-		
+
 		#self.imageLabel.setAlignment(Qt.AlignCenter)
 		#self.imageLabel.setContextMenuPolicy(Qt.ActionsContextMenu)
 		#self.setCentralWidget(self.imageLabel)
-		
+
 		self.forbackComboBox = QComboBox()
 		self.forbackComboBox.addItems(['Forward','Backward'])
 		self.channelComboBox = QComboBox()
 		self.addButton = QPushButton("&Add")
 		self.applyButton = QPushButton("Apply")
 		self.closeButton = QPushButton("Close")
-		
+
 		paraLayout1 = QVBoxLayout()
 		paraLayout1.addLayout(selectLayout)
 		paraLayout1.addWidget(self.proTable)
 		#paraLayout1.addWidget(self.imagePlot2)
 		paraLayout1.addStretch()
-		
+
 		paraLayout2 = QVBoxLayout()
 		paraLayout2.addWidget(self.listWidget)
 		paraLayout2.addStretch()
-		
+
 		showLayout = QGridLayout()
 		xyLayout = QHBoxLayout()
 		xyLayout.addWidget(self.xLabel)
@@ -148,18 +149,18 @@ class MainWindow(QMainWindow):
 		showLayout.addWidget(self.processComboBox,1,0)
 		showLayout.addWidget(self.addButton,1,2)
 		showLayout.addWidget(self.applyButton,1,3)
-		
+
 		paraLayout3 = QVBoxLayout()
 		paraLayout3.addLayout(showLayout)
 		paraLayout3.addWidget(self.imagePlot)
 		paraLayout3.addStretch()
-		
+
 		paraLayout4 = QVBoxLayout()
 		paraLayout4.addWidget(self.curvePlot)
 		paraLayout4.addWidget(self.datchannelComboBox)
 		paraLayout4.addWidget(self.imagePlot2)
-		paraLayout4.addStretch()		
-		
+		paraLayout4.addStretch()
+
 		layout = QHBoxLayout()
 		#layout = QGridLayout()
 		layout.addLayout(paraLayout1)
@@ -170,7 +171,7 @@ class MainWindow(QMainWindow):
 		centralWidget = QWidget()
 		centralWidget.setLayout(layout);
 		self.setCentralWidget(centralWidget);
-		
+
 		self.connect(self.openButton, SIGNAL("clicked()"), self.choosedir)
 		self.connect(self.addButton,SIGNAL("clicked()"), self.selectRegion)
 		self.connect(self.selectComboBox, SIGNAL("currentIndexChanged(int)"),self.openfile)
@@ -180,7 +181,7 @@ class MainWindow(QMainWindow):
 		self.connect(self.datchannelComboBox, SIGNAL("currentIndexChanged(int)"), self.updateSpec)
 		self.connect(self.processComboBox, SIGNAL("currentIndexChanged(int)"), self.updateImage)
 		self.connect(self.applyButton,SIGNAL("clicked()"), self.getSelectRegion)
-		
+
 	def choosedir(self):
 		#fname = unicode(QFileDialog.getOpenFileName(self, "Choose a File"))
 		dname = unicode(QFileDialog.getExistingDirectory(self, "Open Directory"))
@@ -190,7 +191,7 @@ class MainWindow(QMainWindow):
 		if os.path.isdir(dname):
 			self.sxmlist = []
 			self.currentdir = dname
-			
+
 			for line in os.listdir(dname):
 				filepath = os.path.join(self.currentdir,line)
 				#print line
@@ -217,7 +218,7 @@ class MainWindow(QMainWindow):
 					sxmindex.append(i)
 			self.currentsxm = nfiles[sxmindex[0]][0]
 			sortedfiles = {}
-			for i in range(len(sxmindex)-1):				
+			for i in range(len(sxmindex)-1):
 				temp_ind = sxmindex[i]
 				sortedfiles[nfiles[temp_ind][0]] = []
 				for j in range(sxmindex[i]+1,sxmindex[i+1]):
@@ -231,7 +232,7 @@ class MainWindow(QMainWindow):
 			self.selectComboBox.addItems(self.sxmlist)
 			#self.listWidget.addItem(self.alllist[nfirst])
 
-	
+
 	def openfile(self):
 		fname = unicode(self.selectComboBox.currentText())
 		fname = os.path.join(self.currentdir,fname)
@@ -246,11 +247,11 @@ class MainWindow(QMainWindow):
 		self.updateImageInfo()
 		self.updateList()
 		self.updateDatPosition()
-			
+
 	def closefile(self):
 		self.nanofile = None
 		self.proTable.clear()
-		
+
 	def updateTable(self):
 		# update the info of the currently opened sxm file
 		self.proTable.clear()
@@ -269,7 +270,7 @@ class MainWindow(QMainWindow):
 			self.proTable.setItem(count, 1, item)
 			count = count + 1
 		self.proTable.resizeColumnsToContents()
-	
+
 	def updateList(self):
 		# update the dat files belonging to the currently opened sxm
 		self.listWidget.clear()
@@ -298,7 +299,7 @@ class MainWindow(QMainWindow):
 		self.imagePlot.plot.add_item(self.select_rect)
 		self.imagePlot.plot.replot()
 		self.imagePlot.plot.select_item(self.select_rect)
-	
+
 	def getSelectRegion(self):
 		coor3 = self.select_rect.get_points()
 		co1 = coor3[0]  # top right, maximal x and y
@@ -314,7 +315,7 @@ class MainWindow(QMainWindow):
 		#####################################
 		self.image2.set_data(self.select_region)
 		self.imagePlot.plot.set_aspect_ratio(1.00, True)
-		
+
 		self.imagePlot2.plot.set_axis_limits('left',0,w)
 		self.imagePlot2.plot.set_axis_limits('bottom',0,h)
 		self.imagePlot2.plot.replot()
@@ -358,11 +359,11 @@ class MainWindow(QMainWindow):
 			#self.matchrects.append(rect)
 		print num
 		for rect in self.matchrects:
-			self.imagePlot.plot.add_item(rect)	
+			self.imagePlot.plot.add_item(rect)
 		self.imagePlot.plot.replot()
-		
-	
-	
+
+
+
 	def updateDatPosition(self):
 		if self.datrects != None:
 			self.imagePlot.plot.del_items(self.datrects)
@@ -375,7 +376,7 @@ class MainWindow(QMainWindow):
 			temp_x = float(temp_dat.header['X (m)'])*1000000000
 			temp_y = float(temp_dat.header['Y (m)'])*1000000000
 			self.datcoor[line] = [temp_x,temp_y]
-		# read the coordinates into the self.datcoor	
+		# read the coordinates into the self.datcoor
 		# calculate the left-bottom coordinate of the current sxm
 		x_abso = self.nanofile.header['scan_offset'][0]*1000000000 - self.nanofile.header['scan_range'][0]*1000000000/2
 		y_abso = self.nanofile.header['scan_offset'][1]*1000000000 - self.nanofile.header['scan_range'][0]*1000000000/2
@@ -403,11 +404,11 @@ class MainWindow(QMainWindow):
 			#self.datannos.append(anno)
 			#self.datchannelComboBox.clear()
 			#self.datchannelComboBox.addItem(temp_dat)
-			
+
 		for rect in self.datrects:
 			self.imagePlot.plot.add_item(rect)
-		self.imagePlot.plot.replot()		
-	
+		self.imagePlot.plot.replot()
+
 	def updateImage(self):
 		self.clearImage()
 		# update the image and also its properties
@@ -418,14 +419,14 @@ class MainWindow(QMainWindow):
 		#self.currentdata = data
 		self.image.set_data(data)
 		self.imagePlot.plot.set_aspect_ratio(1.00, True)
-		
+
 		self.imagePlot.plot.set_axis_limits('left',0,self.nanofile.header['scan_pixels'][0])
 		self.imagePlot.plot.set_axis_limits('bottom',0,self.nanofile.header['scan_pixels'][1])
 		self.imagePlot.plot.replot()
 		#self.imagePlot.plot.set_axis_scale('left',0,self.nanofile.header['scan_range'][0])
 		#self.imagePlot.plot.set_axis_scale('bottom',0,self.nanofile.header['scan_range'][1])
 		self.imagePlot.plot.select_item(self.image)
-		
+
 	def clearImage(self):
 		if self.select_rect != None:
 			self.imagePlot.plot.del_item(self.select_rect)
@@ -433,7 +434,7 @@ class MainWindow(QMainWindow):
 		if self.matchrects != None:
 			self.imagePlot.plot.del_items(self.matchrects)
 		self.matchrects = []
-		
+
 	def updateImageProcess(self, data):
 		temp_index = self.processComboBox.currentIndex()
 		# row data, no processing
@@ -444,7 +445,7 @@ class MainWindow(QMainWindow):
 			# first calculate the mean of each row
 			row_mean = np.mean(data,axis=1)
 			data = (data.T - row_mean).T
-		# substract slope	
+		# substract slope
 		elif temp_index == 2:
 			data_temp = data.T
 			n = self.nanofile.header['scan_pixels'][0]
@@ -481,12 +482,12 @@ class MainWindow(QMainWindow):
 			data = data - Y
 			# then laplace
 			data = laplace(data)
-			
-			
+
+
 		else:
 			pass
 		return data
-		
+
 	def updateImageInfo(self):
 		self.channelComboBox.clear()
 		channels = []
@@ -497,8 +498,8 @@ class MainWindow(QMainWindow):
 		y = self.nanofile.header['scan_offset'][1]*1000000000
 		self.xshowLabel.setText("%0.2f nm" % x)
 		self.yshowLabel.setText("%0.2f nm" % y)
-			
-		
+
+
 	def updateSpec(self):
 		if self.speclist != None:
 			self.curvePlot.plot.del_items(self.speclist)
@@ -541,7 +542,7 @@ class MainWindow(QMainWindow):
 			hrect = RectangleShape(x1,y1,x2,y2,param)
 			self.dathighlights.append(hrect)
 			num = num + 1
-			
+
 		for item in self.speclist:
 			self.curvePlot.plot.add_item(item)
 		for item in self.dathighlights:
