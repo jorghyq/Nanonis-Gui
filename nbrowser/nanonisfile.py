@@ -170,20 +170,20 @@ class NanonisFile(object):
         for i in range(len(self.data)):
 			if i%2 == 1:
 				self.data[i].data = np.fliplr(self.data[i].data)
-		
+
         if self.header['scan_dir'] == "down":
 			for i in range(len(self.data)):
 				self.data[i].data = np.flipud(self.data[i].data)
 
-			
-		
-		
-		
+
+
+
+
     def getData(self):
         """Return the read data"""
 
         return self.data
-        
+
 def load(filename):
     """Loader function for further data processing
     Return a list of DataArray object"""
