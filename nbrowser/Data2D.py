@@ -19,6 +19,7 @@
 ############################################
 
 import pandas as pd
+import os
 from nanonisfile import NanonisFile
 
 class Data2D:
@@ -39,15 +40,20 @@ class Data2D:
     def get_data(self):
         return self.__data
 
+    def print_param(self):
+        for k, v in self.__param.iteritems():
+            print k, v
+
 
 m2nm = 1e9
 columns = ['filename','filetype','fileformat','pixel1','pixel2',\
-           'size1','size2','ratio','complete','quality','type','fullpath']
+           'size1','size2','ratio','complete','quality','type','flat',\
+           'fullpath']
 type_dict = {'txt': 1, 'sxm': 2, 'dat': 3, '3ds': 4}
 
 def load_sxm(path):
     dirname, filename= os.path.split(path)
-    ending= self.name.split('.')[-1]
+    ending= filename.split('.')[-1]
     try:
         nfile = NanonisFile(path)
     except IOError as e:
@@ -62,8 +68,9 @@ def load_sxm(path):
     param['square'] = True
     param['quality'] = 0
     param['type'] = 0
+    param['flat'] = 0
+    param['clean'] = 0
     param['ending']= ending
-    ending = self.name.split('.')[-1]
     if nfile.header['z-controller>controller status'] == 'ON':
         if nfile.header['z-controller>controller name'] == 'log Current':
             param['fileformat'] = 0 # constant current
@@ -91,5 +98,19 @@ def load_sxm(path):
     param['bias_unit'] = 'V'
     param['current_unit'] = nfile.header['z-controller>setpoint unit']
     param['channels'] = nfile.header['scan>channels'].split(';')
+    param['fullchannels'] = []
+    for i, item in enumerate(param['channels']):
+        param['fullchannels'].append(item+'_F')
+        param['fullchannels'].append(item+'_B')
     ############# Prepare the data of the file
+    data = pd.Panel(major_axis=range(int(param['pixel1']))\
+                                     ,minor_axis=range(int(param['pixel2'])))
+    for i, item in enumerate(param['fullchannels']):
+        data[str(i)] = nfile.data[i].data
+    return param, data
 
+
+if __name__ == "__main__":
+    d2d = Data2D()
+    d2d.load('../test/A151125.005114-01292.sxm')
+    d2d.print_param()
