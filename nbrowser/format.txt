@@ -30,8 +30,8 @@ quality:  0:    really bad, almost no meaningful features
           1:    bad, blurry, multiple tip
           2:    normal, single or double tip
           3:    normal, good and bad mixed
-          3:    good, single tip
-          4:    very good, almost all features visible
+          4:    good, single tip
+          5:    very good, almost all features visible
 
 type:    0:    metal or graphene>95%
          1:    metal, and bad areas

@@ -46,9 +46,8 @@ class Data2D:
 
 
 m2nm = 1e9
-columns = ['filename','filetype','fileformat','pixel1','pixel2',\
-           'size1','size2','ratio','complete','quality','type','flat',\
-           'fullpath']
+columns = ['filename','filetype','fileformat','pixel1','pixel2','size1','size2',\
+           'ratio','square','complete','quality','type','flat','clean','fullpath']
 type_dict = {'txt': 1, 'sxm': 2, 'dat': 3, '3ds': 4}
 
 def load_sxm(path):
@@ -76,6 +75,8 @@ def load_sxm(path):
             param['fileformat'] = 0 # constant current
     else:
         param['fileformat'] = 1 # constant height
+    param['x'] = round(nfile.header['scan_offset'][0]*m2nm,1)
+    param['y'] = round(nfile.header['scan_offset'][1]*m2nm,1)
     param['pixel1'] = nfile.header['scan_pixels'][0]
     param['pixel2'] = nfile.header['scan_pixels'][1]
     param['size1'] = round(nfile.header['scan_range'][0]*m2nm,1)
