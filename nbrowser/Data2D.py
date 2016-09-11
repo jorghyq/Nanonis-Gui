@@ -61,8 +61,8 @@ def load_sxm(path):
     param = {}
     param['filename'] = filename
     param['fullpath'] = path
-    param['filetype'] = 0
-    param['fileformat'] = 0
+    param['ftype'] = 2
+    param['fformat'] = 0
     param['complete'] = True
     param['square'] = True
     param['quality'] = 0
@@ -74,19 +74,19 @@ def load_sxm(path):
         if nfile.header['z-controller>controller name'] == 'log Current':
             param['fileformat'] = 0 # constant current
     else:
-        param['fileformat'] = 1 # constant height
-    param['x'] = round(nfile.header['scan_offset'][0]*m2nm,1)
-    param['y'] = round(nfile.header['scan_offset'][1]*m2nm,1)
+        param['fformat'] = 1 # constant height
+    param['x[nm]'] = round(nfile.header['scan_offset'][0]*m2nm,1)
+    param['y[nm]'] = round(nfile.header['scan_offset'][1]*m2nm,1)
     param['pixel1'] = nfile.header['scan_pixels'][0]
     param['pixel2'] = nfile.header['scan_pixels'][1]
-    param['size1'] = round(nfile.header['scan_range'][0]*m2nm,1)
-    param['size2'] = round(nfile.header['scan_range'][1]*m2nm,1)
-    if param['size1'] == param['size2']:
+    param['size1[nm]'] = round(nfile.header['scan_range'][0]*m2nm,1)
+    param['size2[nm]'] = round(nfile.header['scan_range'][1]*m2nm,1)
+    if param['size1[nm]'] == param['size2[nm]']:
         param['square'] = True
     else:
         param['square'] = False
     param['ratio'] = round((param['pixel1']*param['pixel2']/\
-                                 (param['size1']*param['size2'])),1)
+                                 (param['size1[nm]']*param['size2[nm]'])),1)
     param['acq_time'] = nfile.header['acq_time']
     scan_time = nfile.header['scan_time']
     full_time = param['pixel1']*scan_time[0] + param['pixel2']*scan_time[1]
@@ -94,8 +94,8 @@ def load_sxm(path):
         param['complete'] = True
     else:
         param['complete'] = False
-    param['bias'] = nfile.header['bias']
-    param['current'] = nfile.header['z-controller>setpoint']
+    param['U[V]'] = nfile.header['bias']
+    param['I[A]'] = nfile.header['z-controller>setpoint']
     param['bias_unit'] = 'V'
     param['current_unit'] = nfile.header['z-controller>setpoint unit']
     param['channels'] = nfile.header['scan>channels'].split(';')

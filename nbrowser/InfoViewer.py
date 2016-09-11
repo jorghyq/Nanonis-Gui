@@ -14,38 +14,14 @@ class InfoViewer(QtGui.QWidget):
         self.h2Layout = QtGui.QHBoxLayout()
         self.h3Layout = QtGui.QHBoxLayout()
         # first row
-        row1 = ['x[nm]','0','y[nm]','0','compl','YES','square','YES']
-        self.r1_Layout = init_row(row1)
-        self.x_preLabel = QtGui.QLabel('x[nm]')
-        self.xLabel = QtGui.QLabel('0')
-        self.y_preLabel = QtGui.QLabel('y[nm]')
-        self.yLabel = QtGui.QLabel('0')
-        self.complete_preLabel = QtGui.QLabel('compl')
-        self.completeLabel = QtGui.QLabel('YES')
-        self.square_preLabel = QtGui.QLabel('square')
-        self.squareLabel = QtGui.QLabel('YES')
+        self.row1_pre = ['x[nm]: ','y[nm]: ','compl: ','square: ']
+        self.r1_Layout = init_row(self.row1_pre)
         # second row
-        row2 = ['s1[nm]','0','s2[nm]','0','p1','0','p2','0']
-        self.r2_Layout = init_row(row2)
-        self.size1_preLabel = QtGui.QLabel('s1[nm]')
-        self.size1Lable = QtGui.QLabel('0')
-        self.size2_preLabel = QtGui.QLabel('s2[nm]')
-        self.size2Label = QtGui.QLabel('0')
-        self.pixel1_preLabel = QtGui.QLabel('p1')
-        self.pixel1Label = QtGui.QLabel('0')
-        self.pixel2_preLabel = QtGui.QLabel('p2')
-        self.pixel2Label = QtGui.QLabel('0')
+        self.row2_pre = ['s1[nm]: ','s2[nm]: ','p1: ','p2: ']
+        self.r2_Layout = init_row(self.row2_pre)
         # third row
-        row3 = ['U[V]','0','I[A]','0','ftype','0','fformat','0']
-        self.r3_Layout = init_row(row3)
-        self.bias_preLabel = QtGui.QLabel('U[V]')
-        self.biasLabel = QtGui.QLabel('0')
-        self.current_preLabel = QtGui.QLabel('I(A)')
-        self.currentLabel = QtGui.QLabel('0')
-        self.filetype_preLabel = QtGui.QLabel('ftype')
-        self.filetypeLabel = QtGui.QLabel('0')
-        self.fileformat_preLabel = QtGui.QLabel('fformat')
-        self.fileformatLabel = QtGui.QLabel('0')
+        self.row3_pre = ['U[V]: ','I[A]: ','ftype: ','fformat: ']
+        self.r3_Layout = init_row(self.row3_pre)
         #
         self.vLayout = QtGui.QVBoxLayout()
         self.vLayout.addLayout(self.r1_Layout)
@@ -53,17 +29,17 @@ class InfoViewer(QtGui.QWidget):
         self.vLayout.addLayout(self.r3_Layout)
         # forth row
         if DEV == 1:
-            row4 = ['type','0','set',list('01234'),'predict','0']
-            self.r4_Layout = init_row(row4)
+            self.row4_pre = ['type: ','set',list('01234'),'predict: ']
+            self.r4_Layout = init_row(self.row4_pre)
             #print "row4 is done"
-            row5 = ['quality','0','set',list('012345'),'predict','0']
-            self.r5_Layout = init_row(row5)
+            self.row5_pre = ['quality: ,','set',list('012345'),'predict: ']
+            self.r5_Layout = init_row(self.row5_pre)
             #print "row5 is done"
-            row6 = ['flat','0','set',list('01234'),'predict','0']
-            self.r6_Layout = init_row(row6)
+            self.row6_pre = ['flat: ','set',list('01234'),'predict: ']
+            self.r6_Layout = init_row(self.row6_pre)
             #print "row6 is done"
-            row7 = ['clean','0','set',list('0123'),'predict','0']
-            self.r7_Layout = init_row(row7)
+            self.row7_pre = ['clean: ,','set',list('0123'),'predict: ']
+            self.r7_Layout = init_row(self.row7_pre)
             #print "row7 is done"
             self.vLayout.addLayout(self.r4_Layout)
             self.vLayout.addLayout(self.r5_Layout)
@@ -71,6 +47,29 @@ class InfoViewer(QtGui.QWidget):
             self.vLayout.addLayout(self.r7_Layout)
         self.setLayout(self.vLayout)
         self.show()
+
+    def update(self, param):
+        self.row1 = ['x', 'y', 'complete', 'square']
+        self.row2 = ['size1', 'size2', 'pixel1', 'pixel2']
+        self.row3 = ['bias', 'current', 'filetype', 'fileformat']
+        for i, item in enumerate(self.row1):
+            if item in param:
+                self.r1_Layout.itemAt(2*i+1).widget().setText(self.row1_pre[i]+f2s(param[item]))
+        for i, item in enumerate(self.row2):
+            if item in param:
+                self.r2_Layout.itemAt(2*i+1).widget().setText(self.row2_pre[i]+f2s(param[item]))
+        for i, item in enumerate(self.row3):
+            if item in param:
+                self.r3_Layout.itemAt(2*i+1).widget().setText(self.row3_pre[i]+f2s(param[item]))
+
+#def update_row(self, layout,)
+
+def f2s(input):
+    if isinstance(input, str):
+        return input
+    else:
+        return "{0:.1f}".format(input)
+
 
 def init_row(names):
     hLayout = QtGui.QHBoxLayout()
@@ -82,7 +81,10 @@ def init_row(names):
             #    combo.addITem
             hLayout.addWidget(combo)
         else:
-            hLayout.addWidget(QtGui.QLabel(name))
+            label = QtGui.QLabel(name)
+            label.setFrameStyle(QtGui.QFrame.Panel)
+            label.setLineWidth(2)
+            hLayout.addWidget(label)
     return hLayout
 
 def main():
@@ -93,6 +95,7 @@ def main():
     #win.setCentralWidget(imv)
     infov.show()
     #win.show()
+    infov.update({'x':2})
     sys.exit(app.exec_())
 
 if __name__ == "__main__":
