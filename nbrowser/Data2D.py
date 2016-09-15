@@ -107,18 +107,23 @@ def load_sxm(path):
     data = pd.Panel(major_axis=range(int(param['pixel1']))\
                                      ,minor_axis=range(int(param['pixel2'])))
     for i, item in enumerate(param['fullchannels']):
-        data[str(i)] = nfile.data[i].data
+        data_temp = pd.DataFrame(nfile.data[i].data)
+        #data_temp = data_temp.fillna(0)
+        data_temp = data_temp.astype('<f4')
+        data[str(i)] = data_temp
     return param, data
 
 
 if __name__ == "__main__":
     d2d = Data2D()
-    d2d.load('../test/A151125.005114-01292.sxm')
+    d2d.load('../test/A150114.101316-01257.sxm')
     d2d.print_param()
     panel = d2d.get_data()
     print panel.shape
     print panel.keys()
-    print panel['1'].values.dtype
-    d = panel['1'].values.astype('<f4')
-    print d.dtype
+    print panel['1'].values
+    d = panel['1'].values
+    print d.shape
+    d2 = panel['1'].dropna()
+    print d2.shape
 
