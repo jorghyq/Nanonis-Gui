@@ -5,10 +5,14 @@ import os
 import numpy as np
 from pyqtgraph.Qt import QtCore, QtGui
 import pyqtgraph as pg
+from Data2D import Data2D
 
 class FileSelector(QtGui.QWidget):
     # class to display image
     def __init__(self, parent=None):
+        self.data2d = Data2D()
+        self.data = None
+        self.param = None
         super(FileSelector, self).__init__(parent)
         self.vmainLayout = QtGui.QVBoxLayout()
         self.hopenLayout = QtGui.QHBoxLayout()
@@ -62,7 +66,7 @@ class FileSelector(QtGui.QWidget):
         self.connect(self.lastButton, QtCore.SIGNAL("clicked()"), self.go_last)
         self.connect(self.resetButton, QtCore.SIGNAL("clicked()"), self.savedir_reset)
         self.connect(self.setButton, QtCore.SIGNAL("clicked()"), self.savedir_set)
-
+        self.connect(self.selectComboBox, QtCore.SIGNAL("currentIndexChanged(int)"),self.open_file)
 
     def choose_dir(self):
         dname = unicode(QtGui.QFileDialog.getExistingDirectory(self, "Open Directory"))
@@ -127,6 +131,17 @@ class FileSelector(QtGui.QWidget):
             self.alllist = sortedfiles
             self.selectComboBox.clear()
             self.selectComboBox.addItems(self.sxmlist)
+
+    def open_file(self):
+        fname = unicode(self.selectComboBox.currentText())
+        fname = os.path.join(self.currentdir,fname)
+        if fname:
+            self.data2d.load(fname)
+            self.data = self.data2d.get_data()
+            self.param = self.data2d.get_param()
+            #self.FILELOADED = True
+        #else:
+            #self.FILELOADED = False
 
     def go_first(self):
         active = self.selectComboBox.currentIndex()

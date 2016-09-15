@@ -166,7 +166,8 @@ class NanonisFile(object):
         for i in range(nchannels):
 			data_buffer = self.file.read(size)
 			self.header['channel'] = i
-			self.data.append( DataArray(np.ndarray(shape=self.header['scan_pixels'],dtype='>f',buffer=data_buffer),self.header))
+			self.data.append( DataArray(np.ndarray(shape=[int(self.header['scan_pixels'][0]),int(self.header['scan_pixels'][1])]\
+                                                     ,dtype='>f',buffer=data_buffer),self.header))
         for i in range(len(self.data)):
 			if i%2 == 1:
 				self.data[i].data = np.fliplr(self.data[i].data)

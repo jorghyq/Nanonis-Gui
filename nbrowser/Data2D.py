@@ -115,3 +115,10 @@ if __name__ == "__main__":
     d2d = Data2D()
     d2d.load('../test/A151125.005114-01292.sxm')
     d2d.print_param()
+    panel = d2d.get_data()
+    print panel.shape
+    print panel.keys()
+    print panel['1'].values.dtype
+    d = panel['1'].values.astype('<f4')
+    print d.dtype
+
