@@ -6,6 +6,7 @@ from pyqtgraph.Qt import QtCore, QtGui
 import pyqtgraph as pg
 from Data2D import Data2D
 from FileSelector import FileSelector
+from InfoViewer import InfoViewer
 
 class ImageViewer(QtGui.QWidget):
     # class to display image
@@ -90,10 +91,14 @@ def main():
         def __init__(self, parent=None):
             super(Test, self).__init__(parent)
             self.vmainLayout = QtGui.QVBoxLayout()
+            self.hmainLayout = QtGui.QHBoxLayout()
             self.fs = FileSelector()
             self.imv = ImageViewer()
+            self.info = InfoViewer(1)
             self.vmainLayout.addWidget(self.fs)
-            self.vmainLayout.addWidget(self.imv)
+            self.hmainLayout.addWidget(self.imv)
+            self.hmainLayout.addWidget(self.info)
+            self.vmainLayout.addLayout(self.hmainLayout)
             self.setLayout(self.vmainLayout)
             self.show()
 
@@ -102,6 +107,7 @@ def main():
         def update_all(self):
             #print 'update all'
             self.imv.update_all(self.fs.param,self.fs.data)
+            self.info.update(self.fs.param)
     app = QtGui.QApplication(sys.argv)
     #win = QtGui.QMainWindow()
     #win.resize(400,400)

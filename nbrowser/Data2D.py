@@ -46,6 +46,7 @@ class Data2D:
 
 
 m2nm = 1e9
+A2nA = 1e9
 columns = ['filename','filetype','fileformat','pixel1','pixel2','size1','size2',\
            'ratio','square','complete','quality','type','flat','clean','fullpath']
 type_dict = {'txt': 1, 'sxm': 2, 'dat': 3, '3ds': 4}
