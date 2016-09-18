@@ -64,34 +64,35 @@ class InfoViewer(QtGui.QWidget):
         self.connect(combo,QtCore.SIGNAL("currentIndexChanged(int)"),self.update_row)
 
     def update_row(self):
-        print "update row"
+        #print "update row"
         for row in [3,4,5,6]:
             label_pre = self.predictLayout.itemAtPosition(row,0).widget()
             text_pre = label_pre.text()
             label = self.predictLayout.itemAtPosition(row,1).widget()
             combo = self.predictLayout.itemAtPosition(row,2).widget()
             combo_current = combo.currentIndex()
-            print combo_current
+            #print combo_current
             if combo_current != 0:
-                print text_pre
-                print self.columns.values
+                #print text_pre
+                #print self.columns.values
                 if text_pre in self.columns.values.tolist():
-                    print "label exist in self.columns"
+                    #print "label exist in self.columns"
                     column_ind = self.columns.values.tolist().index(text_pre)
-                    print column_ind
+                    #print column_ind
                     if self.EXISTED:
                         self.data.ix[self.row_ind,column_ind] = combo_current
                         label.setText(f2s(combo_current))
+                        #print self.data.iloc[self.row_ind]
 
     def open_file(self):
         fname = unicode(QtGui.QFileDialog.getOpenFileName())
         if fname[-3:] == 'csv':
             self.data_name = fname
-            self.data = pd.read_csv(fname)
+            self.data = pd.read_csv(fname,index_col=0)
             self.fileLabel.setText(fname)
             self.statusLabel.setText('File Loaded')
-            print type(self.data)
-            print self.data.shape
+            #print type(self.data)
+            #print self.data.shape
             self.predictLayout.itemAtPosition(2,1).widget().setText(f2s(self.data.shape[0]))
             self.columns = self.data.columns
             self.DATALOADED = True
@@ -127,7 +128,7 @@ class InfoViewer(QtGui.QWidget):
                         for j, item in enumerate(label):
                            if not isinstance(item, list):
                                if item in row:
-                                   self.predictLayout.itemAtPosition(i+3,j+1).widget().setText(f2s(row[item]))
+                                   self.predictLayout.itemAtPosition(i+2,j+1).widget().setText(f2s(row[item]))
 
                 else:
                     self.predictLayout.itemAtPosition(2,3).widget().setText('NO')

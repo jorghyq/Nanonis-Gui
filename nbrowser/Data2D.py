@@ -22,6 +22,12 @@ import pandas as pd
 import os
 from nanonisfile import NanonisFile
 
+m2nm = 1e9
+A2nA = 1e9
+columns = ['filename','ftype','fformat','pixel1','pixel2','size1[nm]','size2[nm]',\
+           'ratio','square','complete','quality','type','flat','clean','fullpath']
+type_dict = {'txt': 1, 'sxm': 2, 'dat': 3, '3ds': 4}
+
 class Data2D:
     # Holding the generalized data for every data type
 
@@ -29,10 +35,15 @@ class Data2D:
         self.full_path = None
         self.__param = {}
         self.__data = None # Will be pandas Panel
+        self.columns = columns
+        self.type_dict = type_dict
 
     def load(self,path):
         self.full_path = path
-        self.__param, self.__data = load_sxm(self.full_path)
+        #fpath, fname = os.path.split(self.full_path)
+        if self.full_path[-3:] == 'sxm':
+            self.__param, self.__data = load_sxm(self.full_path)
+            #print self.__param
 
     def get_param(self):
         return self.__param
@@ -44,12 +55,13 @@ class Data2D:
         for k, v in self.__param.iteritems():
             print k, v
 
-
-m2nm = 1e9
-A2nA = 1e9
-columns = ['filename','filetype','fileformat','pixel1','pixel2','size1','size2',\
-           'ratio','square','complete','quality','type','flat','clean','fullpath']
-type_dict = {'txt': 1, 'sxm': 2, 'dat': 3, '3ds': 4}
+    def output_to_csv(self):
+        output = []
+        for item in self.columns:
+            if item in self.__param:
+                output.append(self.__param[item])
+        #print output
+        return output
 
 def load_sxm(path):
     dirname, filename= os.path.split(path)
@@ -73,7 +85,7 @@ def load_sxm(path):
     param['ending']= ending
     if nfile.header['z-controller>controller status'] == 'ON':
         if nfile.header['z-controller>controller name'] == 'log Current':
-            param['fileformat'] = 0 # constant current
+            param['fformat'] = 0 # constant current
     else:
         param['fformat'] = 1 # constant height
     param['x[nm]'] = round(nfile.header['scan_offset'][0]*m2nm,1)
