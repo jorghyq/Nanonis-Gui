@@ -110,7 +110,7 @@ def main():
         def update_all(self):
             #print 'update all'
             self.imv.update_all(self.fs.param,self.fs.data)
-            self.info.update(self.fs.param)
+            self.info.update_info(self.fs.param)
     app = QtGui.QApplication(sys.argv)
     #win = QtGui.QMainWindow()
     #win.resize(400,400)
