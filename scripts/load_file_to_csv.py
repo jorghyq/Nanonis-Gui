@@ -43,3 +43,6 @@ def walk_dirs(start_dir, output=None, ending='sxm'):
                 writer.writerow([row])
     return files
 
+
+if __name__ == "__main__":
+    walk_dirs('/home/jorghyq/Data/','/home/jorghyq/Dropbox/output.txt')
