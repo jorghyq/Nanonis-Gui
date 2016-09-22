@@ -122,6 +122,7 @@ class InfoViewer(QtGui.QWidget):
                 if (filenames == self.param['filename']).any():
                     self.predictLayout.itemAtPosition(2,3).widget().setText('YES')
                     self.EXISTED = True
+                    temp = ['type','quality','clean','flat'] # for reseting the combobox
                     self.row_ind = filenames[filenames ==self.param['filename']].index[0]
                     row = self.data.iloc[self.row_ind]
                     for i, label in enumerate(self.labels_predict):
@@ -129,6 +130,8 @@ class InfoViewer(QtGui.QWidget):
                            if not isinstance(item, list):
                                if item in row:
                                    self.predictLayout.itemAtPosition(i+2,j+1).widget().setText(f2s(row[item]))
+                                   if item in temp:
+                                       self.predictLayout.itemAtPosition(i+2,j+1).widget().setCurrentIndex(0)
 
                 else:
                     self.predictLayout.itemAtPosition(2,3).widget().setText('NO')

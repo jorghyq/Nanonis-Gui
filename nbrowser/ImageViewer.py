@@ -23,7 +23,7 @@ class ImageViewer(QtGui.QWidget):
         self.channelComboBox = QtGui.QComboBox()
         #self.directQScrollBar = QtGui.QScrollBar(1)
         self.processComboBox = QtGui.QComboBox()
-        self.processComboBox.addItem('None')
+        self.processComboBox.addItems(['None','Sub mean','Sub slope','Sub linear fit'])
         self.hLayout.addWidget(self.channelComboBox)
         #self.hLayout.addWidget(self.directQScrollBar)
         self.hLayout.addWidget(self.processComboBox)
@@ -46,9 +46,10 @@ class ImageViewer(QtGui.QWidget):
             self.last_process = self.current_process
             print "last channel text is set to", self.last_channel_text
             self.currentdata = self.data[str(self.current_channel)]
-            self.currentdata = self.currentdata.dropna().values
+            self.currentdata = self.currentdata.dropna().values.T
+            self.currentdata = np.fliplr(self.currentdata)
             self.currentdata = self.process_img(self.currentdata)
-                    #print self.currentdata.shape
+            #print self.currentdata.shape
             self.imv.setImage(self.currentdata)
 
     def update_all(self,param,data):
@@ -78,13 +79,43 @@ class ImageViewer(QtGui.QWidget):
             else:
                 self.last_process = 0
                 self.processComboBox.setCurrentIndex(0)
-            self.update_img()
+            #self.update_img()
 
     def process_img(self,data):
+        print data.shape,type(data)
+        # nothing
         if self.current_process == 0:
-            return data
-        else:
-            return data
+            pass
+        # subtract mean
+        elif self.current_process == 1:
+            row_mean = np.mean(data,axis=0)
+            data = (data - row_mean)
+        # subtract slope
+        elif self.current_process == 2:
+            data_temp = data.T
+            n = data_temp.shape[0]
+            m = data_temp.shape[1]
+            print n, m
+            xi = np.arange(n)
+            x= np.array([xi,np.ones(n)]).T
+            w = np.linalg.lstsq(x,data_temp)[0]
+            X = np.array([xi,]*int(m)).T
+            Y = (X*w[0]).T
+            data = data - Y
+        # subtract linear fit
+        elif self.current_process == 3:
+            data_temp = data.T
+            n = data_temp.shape[0]
+            m = data_temp.shape[1]
+            xi = np.arange(n)
+            x= np.array([xi,np.ones(n)]).T
+            w = np.linalg.lstsq(x,data_temp)[0]
+            X = np.array([xi,]*int(m)).T
+            Y = (X*w[0] + w[1]).T
+            data = data - Y
+        #else:
+            pass
+        return data
 
 def main():
     class Test(QtGui.QWidget):

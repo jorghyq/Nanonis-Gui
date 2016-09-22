@@ -26,24 +26,24 @@ pixel: only accept square image
 
 finished:
 
-quality:  0:    really bad, almost no meaningful features
-          1:    bad, blurry, multiple tip
-          2:    normal, single or double tip
-          3:    normal, good and bad mixed
-          4:    good, single tip
-          5:    very good, almost all features visible
+quality:  1:    really bad, almost no meaningful features
+          2:    bad, blurry, multiple tip
+          3:    normal, single or double tip
+          4:    normal, good and bad mixed
+          5:    good, single tip
+          6:    very good, almost all features visible
 
-type:    0:    metal or graphene>95%
-         1:    metal, and bad areas
-         2:    metal>80%, molecule spreaded over the surface
-         3:    molecular islands
-         4:    molecular structure
+type:    1:    metal or graphene>95%
+         2:    metal, and bad areas
+         3:    metal>80%, molecule spreaded over the surface
+         4:    molecular islands
+         5:    molecular structure
 
-flatness 0:    perfectly flat
-         1:    2 step edges < 2
-         2:    2 < step edges < 5
-         3:    5 < step edges, but still resolvable
-         4:    too rough
+flatness 1:    perfectly flat
+         2:    2 step edges < 2
+         3:    2 < step edges < 5
+         4:    5 < step edges, but still resolvable
+         5:    too rough
 
 cleanness: 0:   very clean
            1:   dirts < 20%

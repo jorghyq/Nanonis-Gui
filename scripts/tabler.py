@@ -51,12 +51,13 @@ class Controller():
                 #self.parser.parsing()
                 #self.parser.output_to_csv()
                 #print self.parser.param['filename'],self.parser.param['filetype']
-                if (self.parser.get_param())['ftype'] == 2:
-                    #print dir_pre+line
-                    self.table.loc[self.count] = self.parser.output_to_csv()
-                    print self.parser.output_to_csv()
-                    print "saved to entry %d", self.count
-                    self.count = self.count + 1
+                if self.parser.LOADED == 0:
+                    if (self.parser.get_param())['ftype'] == 2:
+                        #print dir_pre+line
+                        self.table.loc[self.count] = self.parser.output_to_csv()
+                        print self.parser.output_to_csv()
+                        print "saved to entry %d", self.count
+                        self.count = self.count + 1
 
     def load_table(self):
         pass

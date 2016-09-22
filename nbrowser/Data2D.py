@@ -33,6 +33,7 @@ class Data2D:
 
     def __init__(self):
         self.full_path = None
+        self.LOADED = -1
         self.__param = {}
         self.__data = None # Will be pandas Panel
         self.columns = columns
@@ -42,7 +43,7 @@ class Data2D:
         self.full_path = path
         #fpath, fname = os.path.split(self.full_path)
         if self.full_path[-3:] == 'sxm':
-            self.__param, self.__data = load_sxm(self.full_path)
+            self.__param, self.__data, self.LOADED = load_sxm(self.full_path)
             #print self.__param
 
     def get_param(self):
@@ -66,10 +67,11 @@ class Data2D:
 def load_sxm(path):
     dirname, filename= os.path.split(path)
     ending= filename.split('.')[-1]
-    try:
-        nfile = NanonisFile(path)
-    except IOError as e:
-        print "I/O error({0}): {1}".format(e.errno, e.strerror)
+    nfile = NanonisFile(path)
+    #except IOError as e:
+    #    print "I/O error({0}): {1}".format(e.errno, e.strerror)
+    if not nfile.LOADED:
+        return None, None, -1
     ######## Prepare the parameter of the file
     param = {}
     param['filename'] = filename
@@ -83,11 +85,19 @@ def load_sxm(path):
     param['flat'] = 0
     param['clean'] = 0
     param['ending']= ending
-    if nfile.header['z-controller>controller status'] == 'ON':
-        if nfile.header['z-controller>controller name'] == 'log Current':
-            param['fformat'] = 0 # constant current
+    #if 'z-controller>controller status' in nfile.header:
+    #    if nfile.header['z-controller>controller status'] == 'ON':
+    #        if nfile.header['z-controller>controller name'] == 'log Current':
+    #            param['fformat'] = 0 # constant current
+    #    else:
+    #        param['fformat'] = 1 # constant height
+    #else:
+    # determine the file format
+    if nfile.header['z-controller']['on'] == '1':
+        if nfile.header['z-controller']['Name'] == 'log Current':
+            param['fformat'] = 0
     else:
-        param['fformat'] = 1 # constant height
+        param['fformat'] = 1
     param['x[nm]'] = round(nfile.header['scan_offset'][0]*m2nm,1)
     param['y[nm]'] = round(nfile.header['scan_offset'][1]*m2nm,1)
     param['pixel1'] = nfile.header['scan_pixels'][0]
@@ -98,8 +108,11 @@ def load_sxm(path):
         param['square'] = True
     else:
         param['square'] = False
-    param['ratio'] = round((param['pixel1']*param['pixel2']/\
-                                 (param['size1[nm]']*param['size2[nm]'])),1)
+    if param['size1[nm]'] == 0 or param['size2[nm]'] == 0:
+        param['ratio'] = 'Inf'
+    else:
+        param['ratio'] = round((param['pixel1']*param['pixel2']/\
+                                (param['size1[nm]']*param['size2[nm]'])),1)
     param['acq_time'] = nfile.header['acq_time']
     scan_time = nfile.header['scan_time']
     full_time = param['pixel1']*scan_time[0] + param['pixel2']*scan_time[1]
@@ -108,14 +121,21 @@ def load_sxm(path):
     else:
         param['complete'] = False
     param['U[V]'] = nfile.header['bias']
-    param['I[A]'] = nfile.header['z-controller>setpoint']
+    #param['I[A]'] = nfile.header['z-controller>setpoint']
+    param['I[A]'], param['current_unit'] = nfile.header['z-controller']['Setpoint'].split(' ')
     param['bias_unit'] = 'V'
-    param['current_unit'] = nfile.header['z-controller>setpoint unit']
-    param['channels'] = nfile.header['scan>channels'].split(';')
+    #param['current_unit'] = nfile.header['z-controller>setpoint unit']
+    #param['channels'] = nfile.header['scan>channels'].split(';')
     param['fullchannels'] = []
-    for i, item in enumerate(param['channels']):
-        param['fullchannels'].append(item+'_F')
-        param['fullchannels'].append(item+'_B')
+    #for i, item in enumerate(param['channels']):
+    #    param['fullchannels'].append(item+'_F')
+    #    param['fullchannels'].append(item+'_B')
+    for i, item in enumerate(nfile.header['data_info']):
+        if item['Direction'] == 'both':
+            param['fullchannels'].append(item['Name']+'_('+item['Unit']+')_F')
+            param['fullchannels'].append(item['Name']+'_('+item['Unit']+')_B')
+        else:
+            param['fullchannels'].append(item['Name']+'_('+item['Unit']+')')
     ############# Prepare the data of the file
     data = pd.Panel(major_axis=range(int(param['pixel1']))\
                                      ,minor_axis=range(int(param['pixel2'])))
@@ -124,7 +144,7 @@ def load_sxm(path):
         #data_temp = data_temp.fillna(0)
         data_temp = data_temp.astype('<f4')
         data[str(i)] = data_temp
-    return param, data
+    return param, data, 0
 
 
 if __name__ == "__main__":

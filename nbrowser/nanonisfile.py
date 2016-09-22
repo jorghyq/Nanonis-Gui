@@ -87,10 +87,13 @@ class NanonisFile(object):
         # Check if file is a nanonis file
         s1 = self.file.readline()
         if not re.match(':NANONIS_VERSION:', s1):
-            raise UnhandledFileError, \
-                "The file %s does not have the Nanonis SXM" % \
-                    self.header['filename']
+           # raise UnhandledFileError, \
+           #     "The file %s does not have the Nanonis SXM" % \
+           #         self.header['filename']
+            self.LOADED = False
             return
+        else:
+            self.LOADED = True
 
         self.header['version'] = int(self.file.readline())
 
