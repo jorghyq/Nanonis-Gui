@@ -56,9 +56,9 @@ class ImageViewer(QtGui.QWidget):
             self.currentdata = self.currentdata.dropna().values.T
             self.currentdata = np.fliplr(self.currentdata)
             self.currentdata = self.process_img(self.currentdata)
-            self.contrast_img()
+            lmin, lmax = self.contrast_img()
             #print self.currentdata.shape
-            self.imv.setImage(self.currentdata)
+            self.imv.setImage(self.currentdata,autoLevels=False,levels=(lmin,lmax))
 
     def update_all(self,param,data):
         self.param = param
@@ -126,14 +126,28 @@ class ImageViewer(QtGui.QWidget):
         return data
 
     def contrast_img(self):
+        data_min = np.amin(self.currentdata)
+        data_max = np.amax(self.currentdata)
         if self.current_contrast == 0:
             pass
         elif self.current_contrast == 1:
-            pass
+            print data_min, data_max
+            bins, hist = self.imv.getImageItem().getHistogram()
+            print bins.shape, hist.shape
+            hist_max_ind = hist.argmax()
+            print hist_max_ind
+            hist_max = bins[hist_max_ind]
+            print hist_max
+            level_min = data_min + (hist_max - data_min)*0.5
+            level_max = data_max - (data_max - hist_max)*0.5
+            print level_min, level_max
+            #self.imv.getImageItem().setLevels(level_min,level_max)
+            return level_min, level_max
         elif self.current_contrast == 2:
             pass
         else:
             pass
+        return data_min,data_max
 
 def main():
     app = QtGui.QApplication(sys.argv)
