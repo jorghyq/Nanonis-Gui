@@ -5,8 +5,7 @@ import numpy as np
 from pyqtgraph.Qt import QtCore, QtGui
 import pyqtgraph as pg
 from Data2D import Data2D
-from FileSelector import FileSelector
-from InfoViewer import InfoViewer
+#from FileSelector import FileSelector
 
 class ImageViewer(QtGui.QWidget):
     # class to display image
@@ -16,6 +15,8 @@ class ImageViewer(QtGui.QWidget):
         self.current_process = None
         self.last_channel_text = None
         self.last_process = None
+        self.current_contrast = None
+        self.last_contrast = None
         self.param = None
         self.data = None
         self.vLayout = QtGui.QVBoxLayout()
@@ -24,9 +25,12 @@ class ImageViewer(QtGui.QWidget):
         #self.directQScrollBar = QtGui.QScrollBar(1)
         self.processComboBox = QtGui.QComboBox()
         self.processComboBox.addItems(['None','Sub mean','Sub slope','Sub linear fit'])
+        self.contrastComboBox = QtGui.QComboBox()
+        self.contrastComboBox.addItems(['full range', 'setting1', 'setting2'])
         self.hLayout.addWidget(self.channelComboBox)
         #self.hLayout.addWidget(self.directQScrollBar)
         self.hLayout.addWidget(self.processComboBox)
+        self.hLayout.addWidget(self.contrastComboBox)
         self.vLayout.addLayout(self.hLayout)
         self.imv = pg.ImageView()
         #self.imv.setFixedHeight(400)
@@ -37,6 +41,7 @@ class ImageViewer(QtGui.QWidget):
         self.show()
         self.connect(self.channelComboBox, QtCore.SIGNAL("currentIndexChanged(int)"),self.update_img)
         self.connect(self.processComboBox, QtCore.SIGNAL("currentIndexChanged(int)"),self.update_img)
+        self.connect(self.contrastComboBox, QtCore.SIGNAL("currentIndexChanged(int)"),self.update_img)
 
     def update_img(self):
         self.current_channel = self.channelComboBox.currentIndex()
@@ -44,11 +49,14 @@ class ImageViewer(QtGui.QWidget):
             self.current_process= self.processComboBox.currentIndex()
             self.last_channel_text = self.channelComboBox.currentText()
             self.last_process = self.current_process
+            self.current_contrast = self.contrastComboBox.currentIndex()
+            self.last_contrast = self.current_contrast
             print "last channel text is set to", self.last_channel_text
             self.currentdata = self.data[str(self.current_channel)]
             self.currentdata = self.currentdata.dropna().values.T
             self.currentdata = np.fliplr(self.currentdata)
             self.currentdata = self.process_img(self.currentdata)
+            self.contrast_img()
             #print self.currentdata.shape
             self.imv.setImage(self.currentdata)
 
@@ -117,38 +125,22 @@ class ImageViewer(QtGui.QWidget):
             pass
         return data
 
+    def contrast_img(self):
+        if self.current_contrast == 0:
+            pass
+        elif self.current_contrast == 1:
+            pass
+        elif self.current_contrast == 2:
+            pass
+        else:
+            pass
+
 def main():
-    class Test(QtGui.QWidget):
-        def __init__(self, parent=None):
-            super(Test, self).__init__(parent)
-            self.vmainLayout = QtGui.QVBoxLayout()
-            self.hmainLayout = QtGui.QHBoxLayout()
-            self.fs = FileSelector()
-            self.imv = ImageViewer()
-            self.info = InfoViewer(1)
-            self.vmainLayout.addWidget(self.fs)
-            self.vsecondLayout = QtGui.QVBoxLayout()
-            self.hmainLayout.addWidget(self.imv)
-            self.vsecondLayout.addWidget(self.info)
-            self.vsecondLayout.addItem(QtGui.QSpacerItem(40,20,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding))
-            self.hmainLayout.addLayout(self.vsecondLayout)
-            self.vmainLayout.addLayout(self.hmainLayout)
-            self.setLayout(self.vmainLayout)
-            self.show()
-
-            self.connect(self.fs.selectComboBox, QtCore.SIGNAL("currentIndexChanged(int)"),self.update_all)
-
-        def update_all(self):
-            #print 'update all'
-            self.imv.update_all(self.fs.param,self.fs.data)
-            self.info.update_info(self.fs.param)
     app = QtGui.QApplication(sys.argv)
-    #win = QtGui.QMainWindow()
-    #win.resize(400,400)
-    test = Test()
-    #win.setCentralWidget(imv)
-    #imv.update_img(np.random.rand(10,10))
-    #win.show()
+    imv = ImageViewer()
+    d2d = Data2D()
+    d2d.load('../test/A151125.005114-01292.sxm')
+    imv.update_all(d2d.get_param(),d2d.get_data())
     sys.exit(app.exec_())
 
 if __name__ == "__main__":
