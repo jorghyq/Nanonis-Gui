@@ -131,7 +131,7 @@ class InfoViewer(QtGui.QWidget):
                                if item in row:
                                    self.predictLayout.itemAtPosition(i+2,j+1).widget().setText(f2s(row[item]))
                                    if item in temp:
-                                       self.predictLayout.itemAtPosition(i+2,j+1).widget().setCurrentIndex(0)
+                                       self.predictLayout.itemAtPosition(i+2,j+2).widget().setCurrentIndex(0)
 
                 else:
                     self.predictLayout.itemAtPosition(2,3).widget().setText('NO')

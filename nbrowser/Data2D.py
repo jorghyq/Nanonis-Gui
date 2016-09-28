@@ -25,7 +25,7 @@ from nanonisfile import NanonisFile
 m2nm = 1e9
 A2nA = 1e9
 columns = ['filename','ftype','fformat','pixel1','pixel2','size1[nm]','size2[nm]',\
-           'ratio','square','complete','quality','type','flat','clean','fullpath']
+           'ratio','square','complete','quality','type','flat','clean','fullpath','cmin','cmax','process']
 type_dict = {'txt': 1, 'sxm': 2, 'dat': 3, '3ds': 4}
 
 class Data2D:
@@ -84,6 +84,9 @@ def load_sxm(path):
     param['type'] = 0
     param['flat'] = 0
     param['clean'] = 0
+    param['cmin'] = 0.0
+    param['cmax'] = 0.0
+    param['process'] = 0
     param['ending']= ending
     #if 'z-controller>controller status' in nfile.header:
     #    if nfile.header['z-controller>controller status'] == 'ON':

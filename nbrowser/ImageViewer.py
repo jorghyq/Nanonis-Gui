@@ -59,6 +59,7 @@ class ImageViewer(QtGui.QWidget):
             lmin, lmax = self.contrast_img()
             #print self.currentdata.shape
             self.imv.setImage(self.currentdata,autoLevels=False,levels=(lmin,lmax))
+            print self.imv.getImageItem().getLevels()
 
     def update_all(self,param,data):
         self.param = param
@@ -90,7 +91,7 @@ class ImageViewer(QtGui.QWidget):
             #self.update_img()
 
     def process_img(self,data):
-        print data.shape,type(data)
+        #print data.shape,type(data)
         # nothing
         if self.current_process == 0:
             pass
@@ -100,26 +101,28 @@ class ImageViewer(QtGui.QWidget):
             data = (data - row_mean)
         # subtract slope
         elif self.current_process == 2:
-            data_temp = data.T
+            #print data.shape
+            data_temp = data
             n = data_temp.shape[0]
             m = data_temp.shape[1]
-            print n, m
+            #print n, m
             xi = np.arange(n)
             x= np.array([xi,np.ones(n)]).T
             w = np.linalg.lstsq(x,data_temp)[0]
             X = np.array([xi,]*int(m)).T
-            Y = (X*w[0]).T
+            Y = (X*w[0])
             data = data - Y
+            #print data.shape
         # subtract linear fit
         elif self.current_process == 3:
-            data_temp = data.T
+            data_temp = data
             n = data_temp.shape[0]
             m = data_temp.shape[1]
             xi = np.arange(n)
             x= np.array([xi,np.ones(n)]).T
             w = np.linalg.lstsq(x,data_temp)[0]
             X = np.array([xi,]*int(m)).T
-            Y = (X*w[0] + w[1]).T
+            Y = (X*w[0] + w[1])
             data = data - Y
         #else:
             pass
@@ -153,7 +156,7 @@ def main():
     app = QtGui.QApplication(sys.argv)
     imv = ImageViewer()
     d2d = Data2D()
-    d2d.load('../test/A151125.005114-01292.sxm')
+    d2d.load('../test/A150114.101316-01257.sxm')
     imv.update_all(d2d.get_param(),d2d.get_data())
     sys.exit(app.exec_())
 
