@@ -33,11 +33,12 @@ quality:  1:    really bad, almost no meaningful features
           5:    good, single tip
           6:    very good, almost all features visible
 
-type:    1:    metal or graphene>95%
-         2:    metal, and bad areas
-         3:    metal>80%, molecule spreaded over the surface
-         4:    molecular islands
-         5:    molecular structure
+type:    1:    nothing resolvable
+         2:    metal or graphene>95%
+         3:    metal, and bad areas
+         4:    metal>80%, molecule spreaded over the surface
+         5:    molecular islands
+         6:    molecular structure
 
 flatness 1:    perfectly flat
          2:    2 step edges < 2
@@ -45,7 +46,7 @@ flatness 1:    perfectly flat
          4:    5 < step edges, but still resolvable
          5:    too rough
 
-cleanness: 0:   very clean
-           1:   dirts < 20%
-           2:   20% < dirts < 50%
-           3:   50% < dirts
+cleanness: 1:   very clean
+           2:   dirts < 20%
+           3:   20% < dirts < 50%
+           4:   50% < dirts
