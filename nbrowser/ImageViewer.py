@@ -42,7 +42,7 @@ class ImageViewer(QtGui.QWidget):
         self.connect(self.channelComboBox, QtCore.SIGNAL("currentIndexChanged(int)"),self.update_img)
         self.connect(self.processComboBox, QtCore.SIGNAL("currentIndexChanged(int)"),self.update_img)
         self.connect(self.contrastComboBox, QtCore.SIGNAL("currentIndexChanged(int)"),self.update_img)
-        self.imv.ui.histogram.sigDeviceRangeChanged.connect(self.test)
+        #self.imv.getHistogramWidget().item.sigLevelsChanged.connect(self.test)
 
     def update_img(self):
         self.current_channel = self.channelComboBox.currentIndex()
@@ -129,8 +129,9 @@ class ImageViewer(QtGui.QWidget):
             pass
         return data
 
-    def test(self):
-        print "test success"
+    def get_contrast(self):
+        #print "test success"
+        return self.imv.getImageItem().getLevels()
 
     def contrast_img(self):
         data_min = np.amin(self.currentdata)
