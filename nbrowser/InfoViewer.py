@@ -154,6 +154,37 @@ class InfoViewer(QtGui.QWidget):
                     label.setFrameStyle(QtGui.QFrame.Panel | QtGui.QFrame.Plain)
                     label.setLineWidth(2)
 
+    def update_process(self, process_info):
+        exist = 0
+        channel = process_info.keys()[0]
+        value = process_info[channel]
+        #process_id = process_info[channel][0]
+        #min_max = process_info[channel][1]
+        if self.DATALOADED:
+            # format of process_info should be {'channel':[process_id,[min,max]}
+            if 'process' in self.columns.values.tolist():
+                column_ind = self.columns.values.tolist().index('process')
+                if self.EXISTED:
+                    data = self.data.ix[self.row_ind,column_ind]
+                    # if some channels already are saved
+                    if len(data) != 0:
+                        for i, item in enumerate(data):
+                            # if the
+                            if channel in item:
+                                self.data.ix[self.row_ind,column_ind][i][channel] = value
+                                exist = 1
+                        if exist == 0:
+                            self.data.ix[self.row_ind,column_ind].append(process_info)
+                    else:
+                        self.data.ix[self.row_ind,column_ind].append(process_info)
+            if 'read' in self.columns.values.tolist():
+                column_ind = self.columns.values.tolist().index('read')
+                self.data.ix[self.row_ind,column_ind] = 1
+
+
+
+
+
 def f2s(input):
     if isinstance(input, str):
         return input
