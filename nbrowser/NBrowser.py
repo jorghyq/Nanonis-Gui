@@ -29,6 +29,7 @@ class NBrowser(QtGui.QWidget):
             self.connect(self.fs.selectComboBox, QtCore.SIGNAL("currentIndexChanged(int)"),self.update_all)
             self.connect(self.imv.processComboBox, QtCore.SIGNAL("currentIndexChanged(int)"),self.update_process)
             self.connect(self.imv.channelComboBox, QtCore.SIGNAL("currentIndexChanged(int)"),self.update_process)
+            self.imv.imv.getHistogramWidget().item.sigLevelsChanged.connect(self.update_process)
 
         def update_all(self):
             #print 'update all'
@@ -36,12 +37,13 @@ class NBrowser(QtGui.QWidget):
             self.info.update_info(self.fs.param)
 
         def update_process(self):
-            channel = self.imv.channelComboBox.currentText()
+            channel = str(self.imv.channelComboBox.currentText())
             process_id = self.imv.processComboBox.currentIndex()
-            min_max = self.imv.getImageItem().getLevels()
+            min_max = self.imv.imv.getImageItem().getLevels()
             out = {}
             out[channel] = [process_id,min_max]
-            self.info.update_process(out)
+            if len(channel) > 2:
+                self.info.update_process(out)
 
 def main():
     app = QtGui.QApplication(sys.argv)
