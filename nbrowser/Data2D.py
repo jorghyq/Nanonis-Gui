@@ -26,7 +26,7 @@ m2nm = 1e9
 A2nA = 1e9
 columns = ['filename','ftype','fformat','pixel1','pixel2','size1[nm]','size2[nm]',\
            'ratio','square','complete','quality','type','flat','clean','fullpath',\
-           'process','read']
+           'good','process','read']
 type_dict = {'txt': 1, 'sxm': 2, 'dat': 3, '3ds': 4}
 
 class Data2D:
@@ -89,6 +89,7 @@ def load_sxm(path):
     #param['cmax'] = 0.0
     param['process'] = 0
     param['read'] = 0
+    param['good'] = 0
     param['ending']= ending
     #if 'z-controller>controller status' in nfile.header:
     #    if nfile.header['z-controller>controller status'] == 'ON':
