@@ -53,7 +53,7 @@ class InfoViewer(QtGui.QWidget):
                                 ['quality','0',list('0123456'),'0'],
                                 ['flat','0',list('012345'),'0'],
                                 ['clean','0',list('01234'),'0'],
-                                ['good','0',list('01'),'0']]
+                                ['good','0',list('012'),'0']]
             for i, label in enumerate(self.labels_predict):
                 self.init_row(i+2, label, self.predictLayout)
             self.connect(self.openButton,QtCore.SIGNAL("clicked()"),self.open_file)
