@@ -87,7 +87,7 @@ def load_sxm(path):
     param['clean'] = 0
     #param['cmin'] = 0.0
     #param['cmax'] = 0.0
-    param['process'] = 0
+    param['process'] = []
     param['read'] = 0
     param['good'] = 0
     param['ending']= ending

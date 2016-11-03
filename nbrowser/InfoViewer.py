@@ -58,7 +58,7 @@ class InfoViewer(QtGui.QWidget):
                 self.init_row(i+2, label, self.predictLayout)
             self.connect(self.openButton,QtCore.SIGNAL("clicked()"),self.open_file)
             self.connect(self.saveButton,QtCore.SIGNAL("clicked()"),self.save_file)
-            for i in [3,4,5,6]:
+            for i in [3,4,5,6,7]:
                 self.associate(i)
         self.setLayout(self.vmainLayout)
         self.show()
@@ -70,7 +70,7 @@ class InfoViewer(QtGui.QWidget):
 
     def update_row(self):
         #print "update row"
-        for row in [3,4,5,6]:
+        for row in [3,4,5,6,7]:
             label_pre = self.predictLayout.itemAtPosition(row,0).widget()
             text_pre = label_pre.text()
             label = self.predictLayout.itemAtPosition(row,1).widget()
