@@ -49,8 +49,8 @@ class InfoViewer(QtGui.QWidget):
             self.predictLayout.addWidget(self.fileLabel,1,0,1,4)
             self.vmainLayout.addLayout(self.predictLayout)
             self.labels_predict = [['# Loaded', '0', 'Exist','No'],
-                                ['type','0',list('0123456'),'0'],
-                                ['quality','0',list('0123456'),'0'],
+                                ['type','0',list('012345678'),'0'],
+                                ['quality','0',list('01234567'),'0'],
                                 ['flat','0',list('012345'),'0'],
                                 ['clean','0',list('01234'),'0'],
                                 ['good','0',list('012'),'0']]
