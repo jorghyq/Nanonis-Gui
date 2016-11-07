@@ -65,19 +65,19 @@ class InfoViewer(QtGui.QWidget):
 
     def associate(self, row):
         #label = self.predictLayout.itemAtPosition(row,1).widget()
-        combo = self.predictLayout.itemAtPosition(row,2).widget()
-        self.connect(combo,QtCore.SIGNAL("currentIndexChanged(int)"),self.update_row)
+        line = self.predictLayout.itemAtPosition(row,2).widget()
+        self.connect(line,QtCore.SIGNAL("editingFinished()"),self.update_row)
 
     def update_row(self):
-        #print "update row"
+        print "update row"
         for row in [3,4,5,6,7]:
             label_pre = self.predictLayout.itemAtPosition(row,0).widget()
             text_pre = label_pre.text()
             label = self.predictLayout.itemAtPosition(row,1).widget()
-            combo = self.predictLayout.itemAtPosition(row,2).widget()
-            combo_current = combo.currentIndex()
+            line = self.predictLayout.itemAtPosition(row,2).widget()
+            line_current = str(line.text())
             #print combo_current
-            if combo_current != 0:
+            if line_current != "0":
                 #print text_pre
                 #print self.columns.values
                 if text_pre in self.columns.values.tolist():
@@ -85,8 +85,8 @@ class InfoViewer(QtGui.QWidget):
                     column_ind = self.columns.values.tolist().index(text_pre)
                     #print column_ind
                     if self.EXISTED:
-                        self.data.ix[self.row_ind,column_ind] = combo_current
-                        label.setText(f2s(combo_current))
+                        self.data.ix[self.row_ind,column_ind] = line_current
+                        label.setText(f2s(line_current))
                         #print self.data.iloc[self.row_ind]
 
     def open_file(self):
@@ -136,7 +136,7 @@ class InfoViewer(QtGui.QWidget):
                                if item in row:
                                    self.predictLayout.itemAtPosition(i+2,j+1).widget().setText(f2s(row[item]))
                                    if item in temp:
-                                       self.predictLayout.itemAtPosition(i+2,j+2).widget().setCurrentIndex(0)
+                                       self.predictLayout.itemAtPosition(i+2,j+2).widget().setText("0")
 
                 else:
                     self.predictLayout.itemAtPosition(2,3).widget().setText('NO')
@@ -147,9 +147,9 @@ class InfoViewer(QtGui.QWidget):
     def init_row(self, row, items, layout):
         for i,item in enumerate(items):
             if isinstance(item, list):
-                combo = QtGui.QComboBox()
-                combo.addItems(item)
-                layout.addWidget(combo,row,i)
+                line = QtGui.QLineEdit()
+                line.setText("0")
+                layout.addWidget(line,row,i)
             else:
                 label = QtGui.QLabel(item)
                 layout.addWidget(label,row,i)
