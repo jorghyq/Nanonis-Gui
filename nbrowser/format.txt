@@ -28,29 +28,33 @@ finished:
 
 quality:  1:    very good, almost all features visible
           2:    good, single tip
-          3:    good and bad mixed
+          3:    bad tip
           4:    double or multiple tip, but clear image
-          5:    double or triple tip and low quality
+          5:    double or multiple tip and low quality
           6:    blurry, maybe there is something
           7:    really bad, almost no meaningful features
 
-type:    1:    few molecules or molecular structure
-         2:    molecular islands
-         3:    molecules spread over surface
-         4:    molecular islands and >50% metal
-         5:    molecules spread over surface and >50% metal
-         6:    most metal, some G or BN
-         7:    most graphene or BN
-         8:    nothing resolvable
+type:    1:    molecular islands
+         2:    molecules spread over surface
+         3:    metal
+         4:    graphene
+         5:    dirts
+         6:    artfects
+         7:    not known
+         8:    not applicable
 
 
 flatness 1:    perfectly flat
-         2:    2 step edges < 2
+         2:    step edges < 2
          3:    2 < step edges < 5
          4:    5 < step edges, but still resolvable
          5:    too rough
 
 cleanness: 1:   very clean
            2:   dirts < 20%
-           3:   20% < dirts < 50%
-           4:   50% < dirts
+           3:   20% < dirts < 70%
+           4:   70% < dirts
+
+good:      0:   not good for classification
+           1:   good for classification
+           2:   usable
