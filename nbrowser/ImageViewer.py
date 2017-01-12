@@ -27,6 +27,7 @@ class ImageViewer(QtGui.QWidget):
         self.processComboBox.addItems(['None','Sub mean','Sub slope','Sub linear fit'])
         self.contrastComboBox = QtGui.QComboBox()
         self.contrastComboBox.addItems(['full range', 'setting1', 'setting2'])
+        self.saveButton = QtGui.QPushButton("s&c")
         self.hLayout.addWidget(self.channelComboBox)
         #self.hLayout.addWidget(self.directQScrollBar)
         self.hLayout.addWidget(self.processComboBox)
@@ -42,6 +43,7 @@ class ImageViewer(QtGui.QWidget):
         self.connect(self.channelComboBox, QtCore.SIGNAL("currentIndexChanged(int)"),self.update_img)
         self.connect(self.processComboBox, QtCore.SIGNAL("currentIndexChanged(int)"),self.update_img)
         self.connect(self.contrastComboBox, QtCore.SIGNAL("currentIndexChanged(int)"),self.update_img)
+        self.connect(self.saveButton, QtCore,SIGNAL("clicked"), self.save_copy)
         #self.imv.getHistogramWidget().item.sigLevelsChanged.connect(self.test)
 
     def update_img(self):
@@ -156,6 +158,9 @@ class ImageViewer(QtGui.QWidget):
         else:
             pass
         return data_min,data_max
+
+    def save_copy(self):
+        pass
 
 def main():
     app = QtGui.QApplication(sys.argv)
