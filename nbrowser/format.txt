@@ -55,6 +55,6 @@ cleanness: 1:   very clean
            3:   20% < dirts < 70%
            4:   70% < dirts
 
-good:      0:   not good for classification
-           1:   good for classification
-           2:   usable
+good:      1:   not good for classification
+           2:   good for classification
+           3:   usable

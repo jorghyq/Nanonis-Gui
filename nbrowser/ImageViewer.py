@@ -43,8 +43,11 @@ class ImageViewer(QtGui.QWidget):
         self.connect(self.channelComboBox, QtCore.SIGNAL("currentIndexChanged(int)"),self.update_img)
         self.connect(self.processComboBox, QtCore.SIGNAL("currentIndexChanged(int)"),self.update_img)
         self.connect(self.contrastComboBox, QtCore.SIGNAL("currentIndexChanged(int)"),self.update_img)
-        self.connect(self.saveButton, QtCore,SIGNAL("clicked"), self.save_copy)
+        self.connect(self.saveButton, QtCore.SIGNAL("clicked"), self.save_copy)
         #self.imv.getHistogramWidget().item.sigLevelsChanged.connect(self.test)
+
+    def test(self):
+        print self.imv.getImageItem().getLevels()
 
     def update_img(self):
         self.current_channel = self.channelComboBox.currentIndex()
@@ -62,7 +65,7 @@ class ImageViewer(QtGui.QWidget):
             lmin, lmax = self.contrast_img()
             #print self.currentdata.shape
             self.imv.setImage(self.currentdata,autoLevels=False,levels=(lmin,lmax))
-            print self.imv.getImageItem().getLevels()
+            #print self.imv.getImageItem().getLevels()
 
     def update_all(self,param,data):
         self.param = param

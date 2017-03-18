@@ -40,8 +40,12 @@ class NBrowser(QtGui.QWidget):
             channel = str(self.imv.channelComboBox.currentText())
             process_id = self.imv.processComboBox.currentIndex()
             min_max = self.imv.imv.getImageItem().getLevels()
+            #print min_max
             out = {}
-            out[channel] = [process_id,min_max]
+            out[channel] = []
+            out[channel].append(process_id)
+            out[channel].append(list(min_max))
+            print out
             if len(channel) > 2:
                 self.info.update_process(out)
 
