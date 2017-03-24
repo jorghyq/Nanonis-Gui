@@ -25,8 +25,8 @@ from nanonisfile import NanonisFile
 m2nm = 1e9
 A2nA = 1e9
 columns = ['filename','ftype','fformat','pixel1','pixel2','size1[nm]','size2[nm]',\
-           'ratio','square','complete','quality','type','flat','clean','fullpath',\
-           'good','process','read']
+           'acq_time','ratio','square','complete','quality','type','flat','clean',\
+           'fullpath','good','process','read']
 type_dict = {'txt': 1, 'sxm': 2, 'dat': 3, '3ds': 4}
 
 class Data2D:
