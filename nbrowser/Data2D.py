@@ -26,7 +26,7 @@ m2nm = 1e9
 A2nA = 1e9
 columns = ['filename','ftype','fformat','pixel1','pixel2','size1[nm]','size2[nm]',\
            'acq_time','ratio','square','complete','quality','type','flat','clean',\
-           'fullpath','good','process','read']
+           'fullpath','good','process','Date','Time','read']
 type_dict = {'txt': 1, 'sxm': 2, 'dat': 3, '3ds': 4}
 
 class Data2D:
@@ -104,6 +104,8 @@ def load_sxm(path):
             param['fformat'] = 0
     else:
         param['fformat'] = 1
+    param['Date'] = nfile.header['rec_date']
+    param['Time'] = nfile.header['rec_time']
     param['x[nm]'] = round(nfile.header['scan_offset'][0]*m2nm,1)
     param['y[nm]'] = round(nfile.header['scan_offset'][1]*m2nm,1)
     param['pixel1'] = nfile.header['scan_pixels'][0]
