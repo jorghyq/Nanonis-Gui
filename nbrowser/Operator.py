@@ -10,7 +10,7 @@ class Operator(QtGui.QWidget):
     def __init__(self, parent=None):
         super(Operator, self).__init__(parent)
         self.showLayout = QtGui.QGridLayout()
-        self.
+        #self.
         self.hLayout = QtGui.QHBoxLayout()
         self.channelComboBox = QtGui.QComboBox()
         #self.directQScrollBar = QtGui.QScrollBar(1)
