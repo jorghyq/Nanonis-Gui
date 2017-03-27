@@ -79,8 +79,8 @@ def load_sxm(path):
     param['fullpath'] = path
     param['ftype'] = 2
     param['fformat'] = 0
-    param['complete'] = True
-    param['square'] = True
+    param['complete'] = 1
+    param['square'] = 1
     param['quality'] = 0
     param['type'] = 0
     param['flat'] = 0
@@ -113,9 +113,9 @@ def load_sxm(path):
     param['size1[nm]'] = round(nfile.header['scan_range'][0]*m2nm,1)
     param['size2[nm]'] = round(nfile.header['scan_range'][1]*m2nm,1)
     if param['size1[nm]'] == param['size2[nm]']:
-        param['square'] = True
+        param['square'] = 1
     else:
-        param['square'] = False
+        param['square'] = 0
     if param['size1[nm]'] == 0 or param['size2[nm]'] == 0:
         param['ratio'] = 'Inf'
     else:
@@ -125,9 +125,9 @@ def load_sxm(path):
     scan_time = nfile.header['scan_time']
     full_time = param['pixel1']*scan_time[0] + param['pixel2']*scan_time[1]
     if abs(param['acq_time']-full_time) < 1:
-        param['complete'] = True
+        param['complete'] = 1
     else:
-        param['complete'] = False
+        param['complete'] = 0
     param['U[V]'] = nfile.header['bias']
     #param['I[A]'] = nfile.header['z-controller>setpoint']
     param['I[A]'], param['current_unit'] = nfile.header['z-controller']['Setpoint'].split(' ')
