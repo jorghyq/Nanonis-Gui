@@ -16,13 +16,17 @@ class FileSelector2(QtGui.QWidget):
         self.data = None
         self.db = None
         self.param = None
+        self.num_select = 4
+        self.select = {}
+        for i in range(self.num_select):
+            self.select['select'+str(i)] = []
         super(FileSelector2, self).__init__(parent)
         self.vmainLayout = QtGui.QVBoxLayout()
         self.hopenLayout = QtGui.QHBoxLayout()
         self.hfileLayout = QtGui.QHBoxLayout()
         self.hselectLayout1 = QtGui.QHBoxLayout()
         self.hselectLayout2 = QtGui.QHBoxLayout()
-                # hopenLayout
+        # hopenLayout
         self.pathLabel = QtGui.QLabel('path')
         self.selectComboBox = QtGui.QComboBox()
         self.selectComboBox.setFixedWidth(250)
@@ -38,8 +42,11 @@ class FileSelector2(QtGui.QWidget):
         self.lastButton.setFixedWidth(30)
         self.loadButton = QtGui.QPushButton("&Load")
         self.loadButton.setFixedWidth(100)
+        self.updateButton = QtGui.QPushButton("&Update")
+        self.updateButton.setFixedWidth(100)
         self.hopenLayout.addWidget(self.pathLabel,4)
         self.hopenLayout.addWidget(self.loadButton)
+        self.hopenLayout.addWidget(self.updateButton)
         # hfileLayout
         self.setButton = QtGui.QPushButton("&Set dir")
         self.dirLabel = QtGui.QLabel('pre_dir')
@@ -53,19 +60,11 @@ class FileSelector2(QtGui.QWidget):
         self.hfileLayout.addWidget(self.lastButton)
         self.hfileLayout.addWidget(self.setButton)
         # hsaveLayout
-        #self.select1 = self.add_select_gui()
-        #self.select2 = self.add_select_gui()
-        #self.select3 = self.add_select_gui()
-        #self.select4 = self.add_select_gui()
-        self.select = self.add_select_gui(4)
-        #self.hselectLayout1.addLayout(self.select1)
-        #self.hselectLayout1.addLayout(self.select2)
-        #self.hselectLayout2.addLayout(self.select3)
-        #self.hselectLayout2.addLayout(self.select4)
+        self.select = self.add_select_gui(self.num_select)
         self.vmainLayout.addLayout(self.hfileLayout)
         self.vmainLayout.addLayout(self.hopenLayout)
-        self.vmainLayout.addLayout(self.hselectLayout1)
-        self.vmainLayout.addLayout(self.hselectLayout2)
+        #self.vmainLayout.addLayout(self.hselectLayout1)
+        #self.vmainLayout.addLayout(self.hselectLayout2)
         for item in self.select:
             self.vmainLayout.addLayout(item)
 
@@ -107,6 +106,13 @@ class FileSelector2(QtGui.QWidget):
             hlayout.addWidget(valueLine2)
             selectLayout.append(hlayout)
         return selectLayout
+
+    def update_select(self):
+        for item in self.select:
+            field = item.itamAt
+
+
+
 
     def choose_dir(self):
         self.dname = unicode(QtGui.QFileDialog.getExistingDirectory(self, "Open Directory"))
@@ -186,17 +192,29 @@ class FileSelector2(QtGui.QWidget):
 
     def savedir_reset(self):
         self.savedir = self.currentdir
-        self.saveLabel.setText(self.savedir)
-
-    def savedir_set(self):
-        self.savedir = unicode(QtGui.QFileDialog.getExistingDirectory(self, "Open Directory"))
-        self.saveLabel.setText(self.savedir)
-
-def f2s(input):
-    if isinstance(input, str):
-        return input
-    else:
-        return "{0:.1f}".format(input)
+        selectLayout = []
+        for i in range(n):
+            hlayout = QtGui.QHBoxLayout()
+            fieldComboBox = QtGui.QComboBox()
+            fieldComboBox.addItem("None")
+            operationComboBox1 = QtGui.QComboBox()
+            operationComboBox1.addItems(['>','>=','=','<=','<'])
+            valueLine1 = QtGui.QLineEdit()
+            valueLine1.setText("0")
+            valueLine1.setFixedWidth(40)
+            operationComboBox2 = QtGui.QComboBox()
+            operationComboBox2.addItems(['>','>=','=','<=','<'])
+            operationComboBox2.setCurrentIndex(4)
+            valueLine2 = QtGui.QLineEdit()
+            valueLine2.setText("0")
+            valueLine2.setFixedWidth(40)
+            hlayout.addWidget(fieldComboBox,4)
+            hlayout.addWidget(operationComboBox1)
+            hlayout.addWidget(valueLine1)
+            hlayout.addWidget(operationComboBox2)
+            hlayout.addWidget(valueLine2)
+            selectLayout.append(hlayout)
+        return selectLayout
 
 def main():
     app = QtGui.QApplication(sys.argv)
